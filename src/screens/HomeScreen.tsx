@@ -17,7 +17,6 @@ const HomeScreen: React.FC = () => {
           {/* Add main content/components here */}
         </View>
 
-        {/* Bottom Navbar */}
         <BottomNavbar />
     </SafeAreaProvider>
   );
