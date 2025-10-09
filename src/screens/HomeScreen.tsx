@@ -9,7 +9,6 @@ const HomeScreen: React.FC = () => {
   return (
     <SafeAreaProvider>
 
-        {/* Top Navbar */}
         <TopNavbar />
 
         {/* Main content */}
