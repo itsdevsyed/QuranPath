@@ -14,7 +14,6 @@ const HomeScreen: React.FC = () => {
 
         {/* Main content */}
         <View style={styles.content}>
-          {/* Add main content/components here */}
         </View>
 
         <BottomNavbar />
