@@ -10,43 +10,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout code
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Setup Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      # 3️⃣ Install dependencies
       - name: Install npm dependencies
         run: npm install
 
-      # 4️⃣ Setup Java & Android SDK
+      # Corrected Android setup
       - name: Install Java & Android SDK
         uses: android-actions/setup-android@v3
         with:
-          api-level: 34
-          target: android-34
-          arch: x86_64
-          ndk: false
-          cache: true
+          cmdline-tools-version: "10.0"
+          accept-android-sdk-licenses: true
+          packages: "platforms;android-34,build-tools;34.0.0,platform-tools"
 
-      # 5️⃣ Build Release APK
       - name: Build Release APK
         run: |
           cd android
           ./gradlew assembleRelease
 
-      # 6️⃣ Rename APK to QuranPath.apk
       - name: Rename APK
         run: |
           cd android/app/build/outputs/apk/release
           mv app-release.apk QuranPath.apk
 
-      # 7️⃣ Upload APK as artifact (v4)
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
