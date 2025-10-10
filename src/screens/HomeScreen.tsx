@@ -1,35 +1,30 @@
+// src/screens/HomeScreen.tsx
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import LinearGradient from 'react-native-linear-gradient';
-import BottomNavbar from '../components/BottomNavBar';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import TopNavbar from '../components/TopNavbar';
+import ContinueReadingCard from '../components/ContinueReadingCard';
+import { useTheme } from '../context/ThemeContext';
 
 const HomeScreen: React.FC = () => {
+  const { colors } = useTheme();
+
   return (
-    <SafeAreaProvider>
-
-        <TopNavbar />
-
-        {/* Main content */}
-        <View style={styles.content}>
-        </View>
-
-        <BottomNavbar />
-    </SafeAreaProvider>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <TopNavbar />
+      <ScrollView contentContainerStyle={styles.content}>
+        <ContinueReadingCard />
+        <View style={[styles.mockContent, { backgroundColor: colors.card, borderColor: colors.border }]} />
+        <View style={[styles.mockContent, { backgroundColor: colors.card, borderColor: colors.border }]} />
+        <View style={[styles.mockContent, { backgroundColor: colors.card, borderColor: colors.border }]} />
+      </ScrollView>
+    </View>
   );
 };
 
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  content: {
-    flex: 1,
-    // optional padding or margin for content
-  },
+  container: { flex: 1 },
+  content: { padding: 12, paddingBottom: 120 },
+  mockContent: { height: 200, borderWidth: 1, borderRadius: 8, marginBottom: 16 },
 });

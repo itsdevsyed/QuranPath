@@ -1,14 +1,23 @@
-// App.tsx
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { customTheme } from './src/config/theme';
-import HomeScreen from './src/screens/HomeScreen';
+import { ThemeProvider, useTheme } from './src/context/ThemeContext';
+import BottomNavbar from './src/components/BottomNavBar';
+
+const MainAppContent = () => {
+  const { appTheme } = useTheme();
+
+  return (
+    <PaperProvider theme={appTheme}>
+      {/* BottomNavbar handles all screens */}
+      <BottomNavbar />
+    </PaperProvider>
+  );
+};
 
 export default function App() {
   return (
-    <PaperProvider theme={customTheme}>
-      
-      <HomeScreen />
-    </PaperProvider>
+    <ThemeProvider>
+      <MainAppContent />
+    </ThemeProvider>
   );
 }

@@ -1,55 +1,69 @@
-name: Build Release APK
+# name: Build Release APK (Debug Mode)
 
-on:
-  push:
-    branches:
-      - master
+# on:
+#   push:
+#     branches:
+#       - master
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 18
 
-      - name: Install npm dependencies
-        run: npm install
+#       - name: Install npm dependencies
+#         run: npm ci
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          cmdline-tools-version: "10.0"
-          accept-android-sdk-licenses: true
-          packages: "platforms;android-34,build-tools;34.0.0,build-tools;33.0.2,platform-tools"
+#       - name: Verify project structure
+#         run: |
+#           echo "📁 Listing project files..."
+#           ls -la
+#           echo "📁 Checking android directory..."
+#           ls -la android || echo "❌ android folder not found!"
 
-      - name: Make gradlew executable
-        run: chmod +x android/gradlew
+#       - name: Set up Android SDK
+#         uses: android-actions/setup-android@v3
+#         with:
+#           cmdline-tools-version: "10.0"
+#           accept-android-sdk-licenses: true
+#           packages: "platforms;android-34,build-tools;34.0.0,platform-tools"
 
-      - name: Build Release APK
-        run: |
-          cd android
-          ./gradlew assembleRelease --stacktrace
+#       - name: Make gradlew executable
+#         run: chmod +x android/gradlew
 
-      - name: Rename APK
-        run: |
-          cd android/app/build/outputs/apk/release
-          ls -la
-          if [ -f "app-release.apk" ]; then
-            mv app-release.apk QuranPath.apk
-          else
-            echo "❌ APK not found — build likely failed."
-            exit 1
-          fi
+#       - name: Build Release APK
+#         run: |
+#           cd android
+#           echo "🚀 Starting Gradle build..."
+#           ./gradlew clean assembleRelease --stacktrace --info
 
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: QuranPath-APK
-          path: android/app/build/outputs/apk/release/QuranPath.apk
-          retention-days: 7
+#       - name: List APK output folder
+#         run: |
+#           echo "📦 Checking if APK exists..."
+#           ls -la android/app/build/outputs/apk/release || echo "❌ APK folder missing!"
+
+#       - name: Rename APK (if exists)
+#         run: |
+#           cd android/app/build/outputs/apk/release
+#           if [ -f "app-release.apk" ]; then
+#             mv app-release.apk QuranPath.apk
+#             echo "✅ APK renamed to QuranPath.apk"
+#           else
+#             echo "❌ APK not found — build may have failed"
+#             exit 1
+#           fi
+
+#       - name: Upload APK Artifact
+#         if: success()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: QuranPath-APK
+#           path: android/app/build/outputs/apk/release/QuranPath.apk
+#           retention-days: 7
