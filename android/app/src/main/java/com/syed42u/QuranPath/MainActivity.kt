@@ -1,4 +1,4 @@
-package com.quranpath
+package com.syed42u.QuranPath
 
 import android.os.Build
 import android.os.Bundle

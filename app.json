@@ -2,6 +2,17 @@
   "expo": {
     "name": "QuranPath",
     "slug": "QuranPath",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "41b089d6-9bf3-4266-9673-ea083cbb4771"
+      }
+    },
+    "android": {
+      "package": "com.syed42u.QuranPath"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ]
   }
 }

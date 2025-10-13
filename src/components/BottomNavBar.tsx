@@ -6,6 +6,7 @@ import HomeScreen from '../screens/HomeScreen';
 import MushafScreen from '../screens/MushafScreen';
 import { useTheme } from '../context/ThemeContext';
 
+
 type IconName = 'Home' | 'BookOpenText' | 'Mic' | 'Layers3';
 
 interface Route {

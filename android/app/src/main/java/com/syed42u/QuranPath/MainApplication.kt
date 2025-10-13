@@ -1,4 +1,4 @@
-package com.quranpath
+package com.syed42u.QuranPath
 
 import android.app.Application
 import android.content.res.Configuration
