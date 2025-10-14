@@ -4,20 +4,20 @@ import { MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
 // --- 1. Black & White Theme Definitions ---
 const CustomColors = {
     light: {
-        background: '#FFFFFF',      // White background
-        card: '#F9F9F9',           // Slightly off-white card
-        textPrimary: '#111111',     // Black main text
-        textSecondary: '#4B5563',   // Gray secondary text
-        border: '#E5E7EB',          // Light gray borders
-        primary: '#111111',          // Primary accent color (icons/buttons)
+        background: '#FFFFFF',      // White background
+        card: '#F9F9F9',           // Slightly off-white card
+        textPrimary: '#111111',     // Black main text
+        textSecondary: '#4B5563',   // Gray secondary text
+        border: '#E5E7EB',          // Light gray borders
+        primary: '#111111',          // Primary accent color (icons/buttons)
     },
     dark: {
-        background: '#0A0A0A',      // Black background
-        card: '#1A1A1A',            // Dark card
-        textPrimary: '#FFFFFF',     // White main text
-        textSecondary: '#9CA3AF',   // Gray secondary text
-        border: '#2C2C2C',          // Dark borders
-        primary: '#FFFFFF',          // Primary accent color (icons/buttons)
+        background: '#0A0A0A',      // Black background
+        card: '#1A1A1A',            // Dark card
+        textPrimary: '#FFFFFF',     // White main text
+        textSecondary: '#9CA3AF',   // Gray secondary text
+        border: '#2C2C2C',          // Dark borders
+        primary: '#FFFFFF',          // Primary accent color (icons/buttons)
     },
 };
 
@@ -34,10 +34,36 @@ const getAppTheme = (isDark: boolean) => {
             primary: colors.primary,
             background: colors.background,
             surface: colors.card,
+            // The 'text' property is deprecated in MD3, use onSurface/onPrimary etc.
+            // Keeping text mapping for compatibility with older Paper versions/custom components
             text: colors.textPrimary,
             onSurface: colors.textPrimary,
             border: colors.border,
             backdrop: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.2)',
+        },
+        // 🌟 UPDATED: Configure the font family using MD3 Typescale properties 🌟
+        fonts: {
+            ...baseTheme.fonts,
+            // bodyMedium is the standard text style (equivalent to MD2 'regular')
+            bodyMedium: {
+                ...baseTheme.fonts.bodyMedium,
+                fontFamily: 'ArabicFont',
+            },
+            // titleMedium is commonly used for Appbar titles and Button text (equivalent to MD2 'medium')
+            titleMedium: {
+                ...baseTheme.fonts.titleMedium,
+                fontFamily: 'ArabicFont',
+            },
+            // bodyLarge for slightly larger body text
+            bodyLarge: {
+                ...baseTheme.fonts.bodyLarge,
+                fontFamily: 'ArabicFont',
+            },
+            // titleLarge for large headers
+            titleLarge: {
+                ...baseTheme.fonts.titleLarge,
+                fontFamily: 'ArabicFont',
+            },
         },
     };
 };

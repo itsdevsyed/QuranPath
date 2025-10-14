@@ -1,4 +1,3 @@
-// ContinueReadingCard.tsx
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import { Repeat2 } from 'lucide-react-native';
@@ -44,7 +43,14 @@ export default function ContinueReadingCard() {
         header: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
         icon: { marginRight: 10 },
         title: { fontSize: 16, fontWeight: '700', color: titleColor },
-        surahArabic: { fontSize: 32, fontWeight: 'bold', color: arabicColor, textAlign: 'right', marginBottom: 6 },
+        // 🌟 REFINEMENT: Removed explicit fontWeight: 'bold' to avoid potential conflicts with the custom font's weight 🌟
+        surahArabic: {
+            fontSize: 32,
+            color: arabicColor,
+            textAlign: 'right',
+            marginBottom: 6,
+            fontFamily: 'ArabicFont', // IMPORTANT: This must match the name in App.tsx
+        },
         surahEnglishInfo: { fontSize: 16, color: subTextColor, marginBottom: 20 },
         readButton: {
             backgroundColor: buttonBg,

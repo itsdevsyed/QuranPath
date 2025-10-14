@@ -1,119 +1,203 @@
-import React from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { memo } from 'react';
+import {
+    FlatList,
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    ViewStyle,
+} from 'react-native';
 import { useTheme } from '../context/ThemeContext';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import allSurahsData from '../../assets/quran.json';
 
-// Comprehensive list of the first 11 Surahs for a better demo
-const allSurahsData = [
-    { number: 1, arabic: 'الفاتحة', english: 'Al-Fatiha', verses: 7, location: 'Meccan' },
-    { number: 2, arabic: 'البقرة', english: 'Al-Baqarah', verses: 286, location: 'Medinan' },
-    { number: 3, arabic: 'آل عمران', english: 'Al-Imran', verses: 200, location: 'Medinan' },
-    { number: 4, arabic: 'النساء', english: 'An-Nisa', verses: 176, location: 'Medinan' },
-    { number: 5, arabic: 'المائدة', english: 'Al-Ma\'idah', verses: 120, location: 'Medinan' },
-    { number: 6, arabic: 'الأنعام', english: 'Al-An\'am', verses: 165, location: 'Meccan' },
-    { number: 7, arabic: 'الأعراف', english: 'Al-A\'raf', verses: 206, location: 'Meccan' },
-    { number: 8, arabic: 'الأنفال', english: 'Al-Anfal', verses: 75, location: 'Medinan' },
-    { number: 9, arabic: 'التوبة', english: 'At-Tawbah', verses: 129, location: 'Medinan' },
-    { number: 10, arabic: 'يونس', english: 'Yunus', verses: 109, location: 'Meccan' },
-    { number: 11, arabic: 'هود', english: 'Hud', verses: 123, location: 'Meccan' },
-    // Fill the rest of the 114 Surahs with placeholders to simulate a full list
-    ...Array.from({ length: 114 - 11 }, (_, i) => ({
-        number: i + 12,
-        arabic: `سورة ${i + 12}`,
-        english: `Surah Placeholder ${i + 12}`,
-        verses: Math.floor(Math.random() * 50) + 10, // Random verse count
-        location: i % 2 === 0 ? 'Meccan' : 'Medinan'
-    }))
-];
+// -------------------------------------------------------------------
+// 1. TYPES
+// -------------------------------------------------------------------
 
+type FullSurahJsonItem = {
+    id: number;
+    name: string; // Arabic name
+    transliteration: string; // English transliteration (e.g., Al-Fatihah)
+    translation: string; // English meaning (e.g., The Opener)
+    type: 'meccan' | 'medinan';
+    total_verses: number;
+    verses: any[];
+};
 
-export default function SurahList() {
-    const { colors, isDarkMode } = useTheme();
+type SurahListItemData = {
+    number: number;
+    arabic: string;
+    english: string;
+    translation: string;
+    verses: number;
+    location: string;
+};
 
-    // Use the comprehensive data set
-    const allSurahs = allSurahsData;
+type SurahListProps = {
+    listContentStyle?: ViewStyle;
+};
 
-    const renderItem = ({ item }: { item: typeof allSurahs[0] }) => {
+// Navigation stack params
+type RootStackParamList = {
+    SurahDetails: { surahId: number };
+};
+
+type SurahListNavigationProp = NativeStackNavigationProp<
+    RootStackParamList,
+    'SurahDetails'
+>;
+
+// -------------------------------------------------------------------
+// 2. DATA TRANSFORMATION
+// -------------------------------------------------------------------
+
+const rawSurahData = allSurahsData as FullSurahJsonItem[];
+
+const finalSurahList: SurahListItemData[] = rawSurahData.map((surah) => ({
+    number: surah.id,
+    arabic: surah.name,
+    english: surah.transliteration,
+    translation: surah.translation,
+    verses: surah.total_verses,
+    location: surah.type,
+}));
+
+// -------------------------------------------------------------------
+// 3. COMPONENTS
+// -------------------------------------------------------------------
+
+const SurahListItem = memo(
+    ({ item, colors }: { item: SurahListItemData; colors: any }) => {
+        const navigation = useNavigation<SurahListNavigationProp>();
+
+        const indexContainerStyle = {
+            borderColor: colors.primaryAccent,
+            borderWidth: 1.5,
+            backgroundColor: colors.isDarkMode
+                ? `${colors.primaryAccent}15`
+                : `${colors.primaryAccent}10`,
+        };
+
         return (
-            // Added TouchableOpacity for better user experience (pressable list item)
             <TouchableOpacity
-                style={[
-                    styles.row,
-                    {
-                        backgroundColor: isDarkMode ? colors.backgroundSecondary : colors.backgroundPrimary,
-                        borderColor: colors.border
-                    },
-                ]}
-                activeOpacity={0.8}
-                onPress={() => console.log(`Navigating to Surah ${item.number}`)}
+                style={styles.row}
+                activeOpacity={0.65}
+                accessibilityRole="button"
+                accessibilityLabel={`Surah ${item.english}, ${item.translation}`}
+                onPress={() => navigation.navigate('SurahDetails', { surahId: item.number })}
             >
-                {/* Index Number (Circle) */}
-                <View style={[styles.indexNumberContainer, { borderColor: colors.primaryAccent }]}>
-                    <Text style={[styles.indexNumberText, { color: colors.primaryAccent }]}>{item.number}</Text>
+                {/* Surah Number Badge */}
+                <View style={[styles.indexNumberContainer, indexContainerStyle]}>
+                    <Text style={[styles.indexNumberText, { color: colors.primaryAccent }]}>
+                        {item.number}
+                    </Text>
                 </View>
 
-                {/* Surah Names (English/Location & Verse count) */}
+                {/* Surah Info */}
                 <View style={styles.textContainer}>
-                    <Text style={[styles.english, { color: colors.textPrimary }]}>
-                        {item.english} <Text style={{ fontSize: 12, opacity: 0.6 }}>- {item.location}</Text>
+                    <Text
+                        style={[styles.englishText, { color: colors.textPrimary }]}
+                        numberOfLines={1}
+                    >
+                        {item.english}
                     </Text>
-                    <Text style={[styles.verseCount, { color: colors.textSecondary }]}>
-                        {item.verses} Verses
+                    <Text
+                        style={[styles.subtitle, { color: colors.textSecondary }]}
+                        numberOfLines={1}
+                    >
+                        {item.translation} • {item.location} • {item.verses} Ayahs
                     </Text>
                 </View>
 
                 {/* Arabic Name */}
-                <Text style={[styles.arabic, { color: colors.primary }]}>
+                <Text
+                    style={[styles.arabicText, { color: colors.primary }]}
+                    numberOfLines={1}
+                >
                     {item.arabic}
                 </Text>
             </TouchableOpacity>
         );
-    };
+    }
+);
+
+const ListSeparator = memo(({ color }: { color: string }) => (
+    <View style={[styles.separator, { backgroundColor: color }]} />
+));
+
+// -------------------------------------------------------------------
+// 4. MAIN COMPONENT
+// -------------------------------------------------------------------
+
+export default function SurahList({ listContentStyle }: SurahListProps) {
+    const { colors } = useTheme();
+
+    if (!finalSurahList?.length) {
+        return (
+            <View
+                style={[styles.errorContainer, { backgroundColor: colors.background }]}
+            >
+                <Text style={{ color: colors.textPrimary, textAlign: 'center' }}>
+                    ⚠️ Error: Could not load Surah list data from quran.json.
+                </Text>
+            </View>
+        );
+    }
 
     return (
-        // FIX: The FlatList is now wrapped in an OuterContainer with flex: 1.
-        // This ensures the component itself is properly stretched vertically.
-        <View style={styles.outerContainer}>
-            <FlatList
-                data={allSurahs}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.number.toString()}
-                contentContainerStyle={styles.listContentContainer}
-                style={styles.container}
-            />
-        </View>
+        <FlatList
+            data={finalSurahList}
+            renderItem={({ item }) => <SurahListItem item={item} colors={colors} />}
+            keyExtractor={(item) => item.number.toString()}
+            contentContainerStyle={[styles.listContentContainer, listContentStyle]}
+            ItemSeparatorComponent={() => (
+                <ListSeparator color={`${colors.textSecondary}20`} />
+            )}
+            style={styles.container}
+            initialNumToRender={15}
+            windowSize={21}
+            showsVerticalScrollIndicator={false}
+        />
     );
 }
 
+// -------------------------------------------------------------------
+// 5. STYLES
+// -------------------------------------------------------------------
+
 const styles = StyleSheet.create({
-    outerContainer: { // New style for the defensive outer View
-        flex: 1,
-    },
-    // FIX: This style is applied to the FlatList component itself.
     container: {
         flex: 1,
     },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
     listContentContainer: {
-        paddingHorizontal: 16,
-        paddingBottom: 100 // Ensure space for the bottom navigator
+        paddingVertical: 8,
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingVertical: 14,
-        paddingHorizontal: 12,
-        borderRadius: 12,
-        marginBottom: 8,
+        paddingHorizontal: 16,
+    },
+    separator: {
+        height: 1,
+        marginHorizontal: 16,
     },
     indexNumberContainer: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        borderWidth: 2,
+        width: 34,
+        height: 34,
+        borderRadius: 8,
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 12,
-        flexShrink: 0,
+        marginRight: 16,
     },
     indexNumberText: {
         fontWeight: '700',
@@ -123,19 +207,21 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
     },
-    english: {
-        fontSize: 16,
+    englishText: {
+        fontSize: 17,
         fontWeight: '600',
+        letterSpacing: 0.3,
     },
-    verseCount: {
+    subtitle: {
         fontSize: 12,
         fontWeight: '400',
-        opacity: 0.7
+        marginTop: 2,
+        opacity: 0.7,
     },
-    arabic: {
-        fontSize: 24,
-        fontWeight: '700',
+    arabicText: {
+        fontSize: 26,
+        fontFamily: 'ArabicFont',
         textAlign: 'right',
-        marginLeft: 16,
+        marginLeft: 12,
     },
 });

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ViewStyle, TextStyle } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 
-type Tab = 'surahs' | 'juz' | 'bookmarks';
+export type Tab = 'surahs' | 'juz' | 'bookmarks'; // Exporting the type for use in MushafScreen
 
 const tabs: { key: Tab; label: string }[] = [
     { key: 'surahs', label: 'Surahs' },
@@ -10,9 +10,16 @@ const tabs: { key: Tab; label: string }[] = [
     { key: 'bookmarks', label: 'Bookmarks' },
 ];
 
-export default function TabSegment() {
+type TabSegmentProps = {
+    // 🌟 NEW PROP: Function to communicate the tab change to the parent component (MushafScreen)
+    onTabChange: (tab: Tab) => void;
+    // 🌟 PROP: MushafScreen will now control the active state
+    activeTab: Tab;
+};
+
+// 🌟 UPDATED: Component now accepts props for external control 
+export default function TabSegment({ onTabChange, activeTab }: TabSegmentProps) {
     const { isDarkMode, colors } = useTheme();
-    const [activeTab, setActiveTab] = useState<Tab>('surahs');
 
     // Dynamic colors using only existing theme properties
     const segmentBg = colors.card; // Use your theme card color for segment background
@@ -64,7 +71,8 @@ export default function TabSegment() {
                 return (
                     <TouchableOpacity
                         key={tab.key}
-                        onPress={() => setActiveTab(tab.key)}
+                        // 🌟 ACTION: Call the onTabChange prop instead of local state update
+                        onPress={() => onTabChange(tab.key)}
                         style={[styles.tabButton, isActive && styles.tabButtonActive]}
                         activeOpacity={0.8}
                     >

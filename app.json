@@ -13,6 +13,9 @@
     },
     "assetBundlePatterns": [
       "**/*"
+    ],
+    "plugins": [
+      "expo-font"
     ]
   }
 }
