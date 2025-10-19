@@ -1,4 +1,3 @@
-// src/components/DayTracker.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
@@ -16,17 +15,18 @@ export default function DayTracker({
 }: DayTrackerProps) {
     const { appTheme } = useTheme();
 
-    const currentDayIndex = 4; // Example: Friday
-    const days = ['M', 'T', 'W', 'T', 'F'];
+    const currentDayIndex = new Date().getDay();
+    const adjustedDayIndex = currentDayIndex === 0 ? 6 : currentDayIndex - 1;
+    const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
     const defaultActiveBg = activeDayBg || appTheme.colors.primary;
     const defaultActiveText = activeDayText || '#FFFFFF';
-    const defaultInactiveText = inactiveDayText || '#6B7280'; // gray fallback
+    const defaultInactiveText = inactiveDayText || '#6B7280';
 
     return (
         <View style={styles.dayTracker}>
             {days.map((day, index) => {
-                const isActive = index === currentDayIndex;
+                const isActive = index === adjustedDayIndex;
                 return (
                     <View
                         key={`${day}-${index}`}
@@ -38,7 +38,9 @@ export default function DayTracker({
                         <Text
                             style={[
                                 styles.dayText,
-                                { color: isActive ? defaultActiveText : defaultInactiveText },
+                                {
+                                    color: isActive ? defaultActiveText : defaultInactiveText,
+                                },
                             ]}
                         >
                             {day}
@@ -51,14 +53,20 @@ export default function DayTracker({
 }
 
 const styles = StyleSheet.create({
-    dayTracker: { flexDirection: 'row', alignItems: 'center' },
+    dayTracker: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
     dayBubble: {
-        width: 24,
-        height: 24,
-        borderRadius: 12,
+        width: 28,
+        height: 28,
+        borderRadius: 14,
         justifyContent: 'center',
         alignItems: 'center',
-        marginLeft: 6,
+        marginLeft: 4,
     },
-    dayText: { fontSize: 12, fontWeight: '700' },
+    dayText: {
+        fontSize: 12,
+        fontWeight: '700'
+    },
 });

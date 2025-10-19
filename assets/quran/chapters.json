@@ -1,0 +1,182 @@
+[
+{
+"number": 1,
+"arabic_name": "الم",
+"english_start": "Alif Lam Mim",
+"starting_surah_ayah": "Al-Fatiha (1:1)"
+},
+{
+"number": 2,
+"arabic_name": "سَيَقُولُ",
+"english_start": "Sayaqūlu",
+"starting_surah_ayah": "Al-Baqarah (2:142)"
+},
+{
+"number": 3,
+"arabic_name": "تِلْكَ ٱلرُّسُلُ",
+"english_start": "Tilka r-Rusul",
+"starting_surah_ayah": "Al-Baqarah (2:253)"
+},
+{
+"number": 4,
+"arabic_name": "لَن تَنَالُوا",
+"english_start": "Lan Tanālū",
+"starting_surah_ayah": "Al-Imran (3:92)"
+},
+{
+"number": 5,
+"arabic_name": "وَٱلْمُحْصَنَٰتُ",
+"english_start": "Wa l-Muḥṣanāt",
+"starting_surah_ayah": "An-Nisa (4:24)"
+},
+{
+"number": 6,
+"arabic_name": "لَا يُحِبُّ ٱللَّهُ",
+"english_start": "Lā Yuḥibbu",
+"starting_surah_ayah": "An-Nisa (4:148)"
+},
+{
+"number": 7,
+"arabic_name": "وَإِذَا سَمِعُوا",
+"english_start": "Wa Ithā Sama'u",
+"starting_surah_ayah": "Al-Maidah (5:83)"
+},
+{
+"number": 8,
+"arabic_name": "وَلَوْ أَنَّنَا",
+"english_start": "Wa Law Annanā",
+"starting_surah_ayah": "Al-An'am (6:111)"
+},
+{
+"number": 9,
+"arabic_name": "قَالَ ٱلْمَلَأُ",
+"english_start": "Qala l-Mala'u",
+"starting_surah_ayah": "Al-A'raf (7:88)"
+},
+{
+"number": 10,
+"arabic_name": "وَٱعْلَمُواْ",
+"english_start": "Wa A'lamū",
+"starting_surah_ayah": "Al-Anfal (8:41)"
+},
+{
+"number": 11,
+"arabic_name": "يَعْتَذِرُونَ",
+"english_start": "Ya'tadhirūn",
+"starting_surah_ayah": "At-Tawbah (9:93)"
+},
+{
+"number": 12,
+"arabic_name": "وَمَا مِن دَآبَّةٍ",
+"english_start": "Wa Mā Min Dābbah",
+"starting_surah_ayah": "Hud (11:6)"
+},
+{
+"number": 13,
+"arabic_name": "وَمَآ أُبَرِّئُ",
+"english_start": "Wa Mā Ubarri'u",
+"starting_surah_ayah": "Yusuf (12:53)"
+},
+{
+"number": 14,
+"arabic_name": "رُبَمَا",
+"english_start": "Rubamā",
+"starting_surah_ayah": "Al-Hijr (15:1)"
+},
+{
+"number": 15,
+"arabic_name": "سُبْحَٰنَ",
+"english_start": "Subḥāna",
+"starting_surah_ayah": "Al-Isra (17:1)"
+},
+{
+"number": 16,
+"arabic_name": "وَلَوْ أَنَّهُمْ",
+"english_start": "Wa Law Annahum",
+"starting_surah_ayah": "Al-Kahf (18:75)"
+},
+{
+"number": 17,
+"arabic_name": "ٱقْتَرَبَ لِلنَّاسِ",
+"english_start": "Iqtaraba Li n-Nās",
+"starting_surah_ayah": "Al-Anbiya (21:1)"
+},
+{
+"number": 18,
+"arabic_name": "قَدْ أَفْلَحَ",
+"english_start": "Qad Aflaḥa",
+"starting_surah_ayah": "Al-Mu'minun (23:1)"
+},
+{
+"number": 19,
+"arabic_name": "وَقَالَ ٱلَّذِينَ",
+"english_start": "Wa Qāla l-Ladhīna",
+"starting_surah_ayah": "Al-Furqan (25:21)"
+},
+{
+"number": 20,
+"arabic_name": "أَمَّنْ خَلَقَ",
+"english_start": "Amman Khalaq",
+"starting_surah_ayah": "An-Naml (27:56)"
+},
+{
+"number": 21,
+"arabic_name": "أُتْلُ مَآ أُوحِيَ",
+"english_start": "Utlu Mā Uḥī",
+"starting_surah_ayah": "Al-'Ankabut (29:45)"
+},
+{
+"number": 22,
+"arabic_name": "وَمَن يَقْنُتْ",
+"english_start": "Wa Man Yaqnut",
+"starting_surah_ayah": "Al-Ahzab (33:31)"
+},
+{
+"number": 23,
+"arabic_name": "وَمَا لِيَ",
+"english_start": "Wa Mā Liya",
+"starting_surah_ayah": "Ya-Sin (36:22)"
+},
+{
+"number": 24,
+"arabic_name": "فَمَنْ أَظْلَمُ",
+"english_start": "Faman Aẓlam",
+"starting_surah_ayah": "Az-Zumar (39:32)"
+},
+{
+"number": 25,
+"arabic_name": "إِلَيْهِ يُرَدُّ",
+"english_start": "Ilayhi Yuraddu",
+"starting_surah_ayah": "Fussilat (41:47)"
+},
+{
+"number": 26,
+"arabic_name": "حَمٓ",
+"english_start": "Ha Mim",
+"starting_surah_ayah": "Al-Ahqaf (46:1)"
+},
+{
+"number": 27,
+"arabic_name": "قَالَ فَمَا خَطْبُكُمْ",
+"english_start": "Qāla Fa Mā Khaṭbukum",
+"starting_surah_ayah": "Adh-Dhariyat (51:31)"
+},
+{
+"number": 28,
+"arabic_name": "قَدْ سَمِعَ",
+"english_start": "Qad Sami'a",
+"starting_surah_ayah": "Al-Mujadila (58:1)"
+},
+{
+"number": 29,
+"arabic_name": "تَبَارَكَ ٱلَّذِي",
+"english_start": "Tabāraka l-Ladhī",
+"starting_surah_ayah": "Al-Mulk (67:1)"
+},
+{
+"number": 30,
+"arabic_name": "عَمَّ",
+"english_start": "Amma",
+"starting_surah_ayah": "An-Naba (78:1)"
+}
+]

@@ -1,39 +1,55 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
-import BottomNavbar from './src/components/BottomNavBar';
 import { NavigationContainer } from '@react-navigation/native';
-// 🌟 1. REQUIRED: Import useFonts from expo-font 🌟
 import { useFonts } from 'expo-font';
+import { StatusBar } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AppLoading from './src/components/AppLoading';
+import ErrorBoundary from './src/components/ErrorBoundary';
+import AppNavigator from './src/navigation/AppNavigator';
 
-const MainAppContent = () => {
+const AppContentWithTheme = () => {
   const { appTheme } = useTheme();
 
   return (
     <PaperProvider theme={appTheme}>
-      <BottomNavbar />
+      <StatusBar
+        backgroundColor={appTheme.colors.background}
+        barStyle={appTheme.dark ? "light-content" : "dark-content"}
+      />
+      <AppNavigator />
     </PaperProvider>
   );
 };
 
 export default function App() {
-  // 🌟 2. REQUIRED: Load the custom font before rendering the app 🌟
-  // This uses the path relative to this App.tsx file.
-  const [fontsLoaded] = useFonts({
-    // 'ArabicFont' is the key name we used in ThemeContext.tsx
+  const [fontsLoaded, fontError] = useFonts({
     'ArabicFont': require('./assets/fonts/Arabic.ttf'),
   });
 
-  // If the font hasn't loaded yet, return null (or a splash screen)
-  if (!fontsLoaded) {
-    return null;
+  if (!fontsLoaded && !fontError) {
+    return <AppLoading />;
+  }
+
+  if (fontError) {
+    return (
+      <AppLoading
+        message="Failed to load app resources. Please restart the app."
+        isError={true}
+      />
+    );
   }
 
   return (
-    <ThemeProvider>
-      <NavigationContainer>
-        <MainAppContent />
-      </NavigationContainer>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <SafeAreaProvider>
+        <ThemeProvider>
+          <NavigationContainer>
+            <AppContentWithTheme />
+          </NavigationContainer>
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </ErrorBoundary>
   );
 }
