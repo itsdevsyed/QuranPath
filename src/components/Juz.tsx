@@ -10,6 +10,8 @@ import {
 import { useTheme } from '../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import juzzData from '../../assets/quran/Juzz.json';
+import quranMasterData from '../../assets/quran/quran.json';
 
 type RootStackParamList = {
     VersesPage: {
@@ -23,21 +25,21 @@ type JuzListNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Vers
 type JuzListItemData = {
     number: number;
     arabic: string;
-    start: string;
-    label: string;
+    english: string;
+    transliteration: string;
+    surahRange: string;
+    verseCount: number;
 };
 
 type JuzListProps = {
     listContentStyle?: ViewStyle;
 };
 
-// Mock data since chapters.json might be empty
+// Fallback data
 const mockJuzData: JuzListItemData[] = [
-    { number: 1, arabic: 'الجزء الأول', start: 'Al-Fatihah 1:1', label: 'Juz 1' },
-    { number: 2, arabic: 'الجزء الثاني', start: 'Al-Baqarah 2:142', label: 'Juz 2' },
-    { number: 3, arabic: 'الجزء الثالث', start: 'Al-Baqarah 2:253', label: 'Juz 3' },
-    { number: 4, arabic: 'الجزء الرابع', start: 'Al-Imran 3:93', label: 'Juz 4' },
-    { number: 5, arabic: 'الجزء الخامس', start: 'An-Nisa 4:24', label: 'Juz 5' },
+    { number: 1, arabic: 'الٓمٓ', english: 'Alif Lam Meem', transliteration: 'Alif Laam Meem', surahRange: 'Al-Fatihah 1:1 - Al-Baqarah 2:141', verseCount: 148 },
+    { number: 2, arabic: 'سَيَقُولُ', english: 'Sayaqool', transliteration: 'Sayaqulu', surahRange: 'Al-Baqarah 2:142 - Al-Baqarah 2:252', verseCount: 111 },
+    { number: 30, arabic: 'عَمَّ', english: 'Amma', transliteration: 'Amma', surahRange: 'An-Naba 78:1 - An-Nas 114:6', verseCount: 564 },
 ];
 
 const JuzListItem = memo(({ item, colors }: { item: JuzListItemData; colors: any }) => {
@@ -46,7 +48,7 @@ const JuzListItem = memo(({ item, colors }: { item: JuzListItemData; colors: any
     const handlePress = () => {
         navigation.navigate('VersesPage', {
             juzNumber: item.number,
-            title: `${item.label} (${item.arabic})`
+            title: `${item.english} (${item.arabic})`
         });
     };
 
@@ -72,10 +74,13 @@ const JuzListItem = memo(({ item, colors }: { item: JuzListItemData; colors: any
 
             <View style={styles.textContainer}>
                 <Text style={[styles.englishText, { color: colors.textPrimary }]} numberOfLines={1}>
-                    {item.label}
+                    {item.english}
                 </Text>
-                <Text style={[styles.subtitle, { color: colors.textSecondary }]} numberOfLines={1}>
-                    Starts at {item.start}
+                <Text style={[styles.transliterationText, { color: colors.primaryAccent }]} numberOfLines={1}>
+                    {item.transliteration}
+                </Text>
+                <Text style={[styles.subtitle, { color: colors.textSecondary }]} numberOfLines={2}>
+                    {item.surahRange} • {item.verseCount} verses
                 </Text>
             </View>
 
@@ -93,15 +98,16 @@ const ListSeparator = memo(({ color }: { color: string }) => (
 export default function JuzList({ listContentStyle }: JuzListProps) {
     const { colors } = useTheme();
 
-    const juzData = useMemo<JuzListItemData[]>(() => {
+    const finalJuzData = useMemo<JuzListItemData[]>(() => {
         try {
-            const chapterData = require('../../assets/quran/chapters.json');
-            if (chapterData && Array.isArray(chapterData) && chapterData.length > 0) {
-                return chapterData.map((j: any) => ({
-                    number: j.number,
-                    arabic: j.arabic_name,
-                    start: j.starting_surah_ayah,
-                    label: j.english_start,
+            if (juzzData && Array.isArray(juzzData) && juzzData.length > 0) {
+                return juzzData.map((juz: any) => ({
+                    number: juz.id,
+                    arabic: juz.arabic_name,
+                    english: juz.english_name,
+                    transliteration: juz.transliteration,
+                    surahRange: juz.surah_range,
+                    verseCount: juz.verse_count,
                 }));
             } else {
                 return mockJuzData;
@@ -111,9 +117,17 @@ export default function JuzList({ listContentStyle }: JuzListProps) {
         }
     }, []);
 
+    if (!finalJuzData?.length) return (
+        <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
+            <Text style={{ color: colors.textPrimary, textAlign: 'center' }}>
+                ⚠️ Error: Could not load Juz list data.
+            </Text>
+        </View>
+    );
+
     return (
         <FlatList
-            data={juzData}
+            data={finalJuzData}
             renderItem={({ item }) => <JuzListItem item={item} colors={colors} />}
             keyExtractor={(item) => item.number.toString()}
             contentContainerStyle={[styles.listContentContainer, listContentStyle]}
@@ -122,7 +136,8 @@ export default function JuzList({ listContentStyle }: JuzListProps) {
             )}
             style={[styles.container, { backgroundColor: colors.background }]}
             showsVerticalScrollIndicator={false}
-            initialNumToRender={10}
+            initialNumToRender={15}
+            windowSize={21}
         />
     );
 }
@@ -155,7 +170,8 @@ const styles = StyleSheet.create({
     indexNumberText: { fontWeight: '700', fontSize: 14 },
     textContainer: { flex: 1, justifyContent: 'center', marginRight: 12 },
     englishText: { fontSize: 16, fontWeight: '600', letterSpacing: 0.3 },
-    subtitle: { fontSize: 12, fontWeight: '400', marginTop: 2, opacity: 0.7 },
+    transliterationText: { fontSize: 12, fontWeight: '500', marginTop: 2, opacity: 0.8 },
+    subtitle: { fontSize: 11, fontWeight: '400', marginTop: 2, opacity: 0.7 },
     arabicText: {
         fontSize: 22,
         fontFamily: 'ArabicFont',

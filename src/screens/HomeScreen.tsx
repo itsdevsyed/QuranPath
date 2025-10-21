@@ -10,12 +10,27 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {/* Top navbar */}
       <TopNavbar />
-      <ScrollView contentContainerStyle={styles.content}>
+
+      {/* Scrollable content */}
+      <ScrollView
+        contentContainerStyle={[styles.content, { paddingBottom: 120 }]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Continue Reading Card */}
         <ContinueReadingCard />
-        <View style={[styles.mockContent, { backgroundColor: colors.card, borderColor: colors.border }]} />
-        <View style={[styles.mockContent, { backgroundColor: colors.card, borderColor: colors.border }]} />
-        <View style={[styles.mockContent, { backgroundColor: colors.card, borderColor: colors.border }]} />
+
+        {/* Mock content blocks */}
+        {[...Array(3)].map((_, idx) => (
+          <View
+            key={idx}
+            style={[
+              styles.mockContent,
+              { backgroundColor: colors.card, borderColor: colors.border },
+            ]}
+          />
+        ))}
       </ScrollView>
     </View>
   );
@@ -25,6 +40,15 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: { padding: 12, paddingBottom: 120 },
-  mockContent: { height: 200, borderWidth: 1, borderRadius: 8, marginBottom: 16 },
+
+  content: {
+    padding: 12,
+  },
+
+  mockContent: {
+    height: 200,
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
 });

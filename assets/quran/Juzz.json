@@ -1,0 +1,242 @@
+[
+  {
+    "id": 1,
+    "arabic_name": "الٓمٓ",
+    "english_name": "Alif Lam Meem",
+    "transliteration": "Alif Laam Meem",
+    "surah_range": "Al-Fatihah 1:1 - Al-Baqarah 2:141",
+    "verse_count": 148
+  },
+  {
+    "id": 2,
+    "arabic_name": "سَيَقُولُ",
+    "english_name": "Sayaqool",
+    "transliteration": "Sayaqulu",
+    "surah_range": "Al-Baqarah 2:142 - Al-Baqarah 2:252",
+    "verse_count": 111
+  },
+  {
+    "id": 3,
+    "arabic_name": "تِلْكَ ٱلرُّسُلُ",
+    "english_name": "Tilkar Rusul",
+    "transliteration": "Tilka Ar-Rusulu",
+    "surah_range": "Al-Baqarah 2:253 - Aal-e-Imran 3:92",
+    "verse_count": 126
+  },
+  {
+    "id": 4,
+    "arabic_name": "لَنْ تَنَالُوا۟",
+    "english_name": "Lan Tana Loo",
+    "transliteration": "Lan Tanalu",
+    "surah_range": "Aal-e-Imran 3:93 - An-Nisa 4:23",
+    "verse_count": 132
+  },
+  {
+    "id": 5,
+    "arabic_name": "وَٱلْمُحْصَنَاتُ",
+    "english_name": "Wal Mohsanat",
+    "transliteration": "Wal Muhsanaat",
+    "surah_range": "An-Nisa 4:24 - An-Nisa 4:147",
+    "verse_count": 124
+  },
+  {
+    "id": 6,
+    "arabic_name": "لَا يُحِبُّ ٱللَّهُ",
+    "english_name": "La Yuhibbullah",
+    "transliteration": "La Yuhibbullah",
+    "surah_range": "An-Nisa 4:148 - Al-Maidah 5:81",
+    "verse_count": 110
+  },
+  {
+    "id": 7,
+    "arabic_name": "وَإِذَا سَمِعُوا۟",
+    "english_name": "Wa Iza Samiu",
+    "transliteration": "Wa Itha Samiu",
+    "surah_range": "Al-Maidah 5:82 - Al-Anam 6:110",
+    "verse_count": 149
+  },
+  {
+    "id": 8,
+    "arabic_name": "وَلَوْ أَنَّنَا",
+    "english_name": "Wa Lau Annana",
+    "transliteration": "Wa Law Annana",
+    "surah_range": "Al-Anam 6:111 - Al-Araf 7:87",
+    "verse_count": 142
+  },
+  {
+    "id": 9,
+    "arabic_name": "قَالَ ٱلْمَلَأُ",
+    "english_name": "Qalal Malao",
+    "transliteration": "Qala Al-Malao",
+    "surah_range": "Al-Araf 7:88 - Al-Anfal 8:40",
+    "verse_count": 159
+  },
+  {
+    "id": 10,
+    "arabic_name": "وَٱعْلَمُوٓا۟",
+    "english_name": "Wa A'lamu",
+    "transliteration": "Wa A'lamu",
+    "surah_range": "Al-Anfal 8:41 - At-Tawbah 9:92",
+    "verse_count": 127
+  },
+  {
+    "id": 11,
+    "arabic_name": "يَعْتَذِرُونَ",
+    "english_name": "Yatazeroon",
+    "transliteration": "Yatazirun",
+    "surah_range": "At-Tawbah 9:93 - Hud 11:5",
+    "verse_count": 151
+  },
+  {
+    "id": 12,
+    "arabic_name": "وَمَا مِن دَآبَّةٍ",
+    "english_name": "Wa Mamin Da'abat",
+    "transliteration": "Wa Ma Min Dabbatin",
+    "surah_range": "Hud 11:6 - Yusuf 12:52",
+    "verse_count": 170
+  },
+  {
+    "id": 13,
+    "arabic_name": "وَمَا أُبَرِّئُ",
+    "english_name": "Wa Ma Ubari",
+    "transliteration": "Wa Ma Ubarri",
+    "surah_range": "Yusuf 12:53 - Ibrahim 14:52",
+    "verse_count": 154
+  },
+  {
+    "id": 14,
+    "arabic_name": "رُّبَمَا",
+    "english_name": "Rubama",
+    "transliteration": "Rubama",
+    "surah_range": "Al-Hijr 15:1 - An-Nahl 16:128",
+    "verse_count": 227
+  },
+  {
+    "id": 15,
+    "arabic_name": "سُبْحَانَ ٱلَّذِى",
+    "english_name": "Subhanallazi",
+    "transliteration": "Subhanalladhi",
+    "surah_range": "Al-Isra 17:1 - Al-Kahf 18:74",
+    "verse_count": 185
+  },
+  {
+    "id": 16,
+    "arabic_name": "قَالَ أَلَمْ",
+    "english_name": "Qal Alam",
+    "transliteration": "Qala Alam",
+    "surah_range": "Al-Kahf 18:75 - Ta-Ha 20:135",
+    "verse_count": 269
+  },
+  {
+    "id": 17,
+    "arabic_name": "ٱقْتَرَبَ لِلنَّاسِ",
+    "english_name": "Aqtarabo",
+    "transliteration": "Iqtaraba",
+    "surah_range": "Al-Anbiya 21:1 - Al-Hajj 22:78",
+    "verse_count": 190
+  },
+  {
+    "id": 18,
+    "arabic_name": "قَدْ أَفْلَحَ",
+    "english_name": "Qadd Aflaha",
+    "transliteration": "Qad Aflaha",
+    "surah_range": "Al-Muminun 23:1 - Al-Furqan 25:20",
+    "verse_count": 124
+  },
+  {
+    "id": 19,
+    "arabic_name": "وَقَالَ ٱلَّذِينَ",
+    "english_name": "Wa Qalallazina",
+    "transliteration": "Wa Qala Alladhina",
+    "surah_range": "Al-Furqan 25:21 - An-Naml 27:55",
+    "verse_count": 227
+  },
+  {
+    "id": 20,
+    "arabic_name": "أَمَّنْ خَلَقَ",
+    "english_name": "A'man Khalaq",
+    "transliteration": "Amman Khalaq",
+    "surah_range": "An-Naml 27:56 - Al-Ankabut 29:45",
+    "verse_count": 171
+  },
+  {
+    "id": 21,
+    "arabic_name": "أُتْلُ مَاأُوْحِیَ",
+    "english_name": "Utlu Ma Oohi",
+    "transliteration": "Utlu Ma Oohiya",
+    "surah_range": "Al-Ankabut 29:46 - Al-Ahzab 33:30",
+    "verse_count": 178
+  },
+  {
+    "id": 22,
+    "arabic_name": "وَمَنْ يَّقْنُتْ",
+    "english_name": "Wa Manyaqnut",
+    "transliteration": "Wa Man Yaqnut",
+    "surah_range": "Al-Ahzab 33:31 - Ya-Sin 36:27",
+    "verse_count": 169
+  },
+  {
+    "id": 23,
+    "arabic_name": "وَمَآ لي",
+    "english_name": "Wa Mali",
+    "transliteration": "Wa Mali",
+    "surah_range": "Ya-Sin 36:28 - Az-Zumar 39:31",
+    "verse_count": 175
+  },
+  {
+    "id": 24,
+    "arabic_name": "فَمَنْ أَظْلَمُ",
+    "english_name": "Faman Azlam",
+    "transliteration": "Faman Azlam",
+    "surah_range": "Az-Zumar 39:32 - Fussilat 41:46",
+    "verse_count": 145
+  },
+  {
+    "id": 25,
+    "arabic_name": "إِلَيْهِ يُرَدُّ",
+    "english_name": "Ilaihi Yuraddu",
+    "transliteration": "Ilayhi Yuraddu",
+    "surah_range": "Fussilat 41:47 - Al-Jathiya 45:37",
+    "verse_count": 146
+  },
+  {
+    "id": 26,
+    "arabic_name": "حم",
+    "english_name": "Ha'a Meem",
+    "transliteration": "Ha Meem",
+    "surah_range": "Al-Ahqaf 46:1 - Adh-Dhariyat 51:30",
+    "verse_count": 195
+  },
+  {
+    "id": 27,
+    "arabic_name": "قَالَ فَمَا خَطْبُكُمْ",
+    "english_name": "Qala Fama Khatbukum",
+    "transliteration": "Qala Fama Khatbukum",
+    "surah_range": "Adh-Dhariyat 51:31 - Al-Hadid 57:29",
+    "verse_count": 185
+  },
+  {
+    "id": 28,
+    "arabic_name": "قَدْ سَمِعَ ٱللَّهُ",
+    "english_name": "Qad Sami Allah",
+    "transliteration": "Qad Sami Allah",
+    "surah_range": "Al-Mujadila 58:1 - At-Tahrim 66:12",
+    "verse_count": 113
+  },
+  {
+    "id": 29,
+    "arabic_name": "تَبَارَكَ ٱلَّذِى",
+    "english_name": "Tabarakallazi",
+    "transliteration": "Tabarakalladhi",
+    "surah_range": "Al-Mulk 67:1 - Al-Mursalat 77:50",
+    "verse_count": 137
+  },
+  {
+    "id": 30,
+    "arabic_name": "عَمَّ",
+    "english_name": "Amma",
+    "transliteration": "Amma",
+    "surah_range": "An-Naba 78:1 - An-Nas 114:6",
+    "verse_count": 564
+  }
+]

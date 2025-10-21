@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, Text, View, TouchableOpacity, ViewStyle } from 'r
 import { useTheme } from '../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import surahData from '../../assets/quran/surah.json';
+import quranMasterData from '../../assets/quran/quran.json';
 
 type RootStackParamList = {
     VersesPage: {
@@ -32,16 +32,38 @@ const fallbackSurahList: SurahListItemData[] = [
     { number: 3, arabic: 'آل عمران', english: 'Aal-e-Imran', translation: 'The Family of Imran', verses: 200, location: 'medinan' },
 ];
 
-const finalSurahList: SurahListItemData[] = surahData && surahData.length > 0
-    ? surahData.map((surah: any) => ({
-        number: surah.number,
-        arabic: surah.arabic_name,
-        english: surah.english_transliteration,
-        translation: surah.english_translation,
-        verses: surah.total_verses,
-        location: surah.type.toLowerCase(),
-    }))
-    : fallbackSurahList;
+// Check if quranMasterData is array or object and extract surahs
+const getSurahList = () => {
+    if (Array.isArray(quranMasterData)) {
+        return quranMasterData.length > 0
+            ? quranMasterData.map((surah: any) => ({
+                number: surah.id,
+                arabic: surah.name,
+                english: surah.transliteration,
+                translation: surah.english_name || 'Surah',
+                verses: surah.total_verses,
+                location: surah.type.toLowerCase(),
+            }))
+            : fallbackSurahList;
+    } else if (quranMasterData && typeof quranMasterData === 'object') {
+        // If it's an object with surahs inside, extract them
+        const surahs = Object.values(quranMasterData);
+        return surahs.length > 0
+            ? surahs.map((surah: any) => ({
+                number: surah.id,
+                arabic: surah.name,
+                english: surah.transliteration,
+                translation: surah.english_name || 'Surah',
+                verses: surah.total_verses,
+                location: surah.type.toLowerCase(),
+            }))
+            : fallbackSurahList;
+    } else {
+        return fallbackSurahList;
+    }
+};
+
+const finalSurahList: SurahListItemData[] = getSurahList();
 
 const SurahListItem = memo(({ item, colors }: { item: SurahListItemData; colors: any }) => {
     const navigation = useNavigation<SurahListNavigationProp>();

@@ -9,7 +9,9 @@ import AppLoading from './src/components/AppLoading';
 import ErrorBoundary from './src/components/ErrorBoundary';
 import AppNavigator from './src/navigation/AppNavigator';
 
+
 const AppContentWithTheme = () => {
+  
   const { appTheme } = useTheme();
 
   return (
@@ -25,7 +27,7 @@ const AppContentWithTheme = () => {
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
-    'ArabicFont': require('./assets/fonts/Arabic.ttf'),
+    'ArabicFont': require('./assets/fonts/Ar.otf'),
   });
 
   if (!fontsLoaded && !fontError) {
