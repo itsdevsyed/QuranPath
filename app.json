@@ -3,6 +3,9 @@
     "name": "QuranPath",
     "slug": "QuranPath",
     "version": "1.0.0",
+        "web": {
+      "bundler": "metro"
+    },
     "extra": {
       "eas": {
         "projectId": "41b089d6-9bf3-4266-9673-ea083cbb4771"
@@ -15,7 +18,7 @@
       "**/*"
     ],
     "plugins": [
-      "expo-font",
+      "expo-font"
     ]
   }
 }
