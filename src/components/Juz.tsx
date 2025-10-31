@@ -11,16 +11,18 @@ import { useTheme } from '../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import juzzData from '../../assets/quran/Juzz.json';
-import quranMasterData from '../../assets/quran/quran.json';
 
 type RootStackParamList = {
-    VersesPage: {
+    JuzVersesPage: {
         juzNumber: number;
         title: string;
     };
 };
 
-type JuzListNavigationProp = NativeStackNavigationProp<RootStackParamList, 'VersesPage'>;
+type JuzListNavigationProp = NativeStackNavigationProp<
+    RootStackParamList,
+    'JuzVersesPage'
+>;
 
 type JuzListItemData = {
     number: number;
@@ -35,29 +37,20 @@ type JuzListProps = {
     listContentStyle?: ViewStyle;
 };
 
-// Fallback data
-const mockJuzData: JuzListItemData[] = [
-    { number: 1, arabic: 'الٓمٓ', english: 'Alif Lam Meem', transliteration: 'Alif Laam Meem', surahRange: 'Al-Fatihah 1:1 - Al-Baqarah 2:141', verseCount: 148 },
-    { number: 2, arabic: 'سَيَقُولُ', english: 'Sayaqool', transliteration: 'Sayaqulu', surahRange: 'Al-Baqarah 2:142 - Al-Baqarah 2:252', verseCount: 111 },
-    { number: 30, arabic: 'عَمَّ', english: 'Amma', transliteration: 'Amma', surahRange: 'An-Naba 78:1 - An-Nas 114:6', verseCount: 564 },
-];
-
 const JuzListItem = memo(({ item, colors }: { item: JuzListItemData; colors: any }) => {
     const navigation = useNavigation<JuzListNavigationProp>();
 
     const handlePress = () => {
-        navigation.navigate('VersesPage', {
+        navigation.navigate('JuzVersesPage', {
             juzNumber: item.number,
-            title: `${item.english} (${item.arabic})`
+            title: `${item.english} (${item.arabic})`,
         });
     };
 
     const indexContainerStyle = {
         borderColor: colors.primaryAccent,
         borderWidth: 1.5,
-        backgroundColor: colors.isDarkMode
-            ? `${colors.primaryAccent}15`
-            : `${colors.primaryAccent}10`,
+        backgroundColor: colors.isDarkMode ? `${colors.primaryAccent}15` : `${colors.primaryAccent}10`
     };
 
     return (
@@ -79,7 +72,7 @@ const JuzListItem = memo(({ item, colors }: { item: JuzListItemData; colors: any
                 <Text style={[styles.transliterationText, { color: colors.primaryAccent }]} numberOfLines={1}>
                     {item.transliteration}
                 </Text>
-                <Text style={[styles.subtitle, { color: colors.textSecondary }]} numberOfLines={2}>
+                <Text style={[styles.subtitle, { color: colors.textSecondary }]} numberOfLines={1}>
                     {item.surahRange} • {item.verseCount} verses
                 </Text>
             </View>
@@ -110,20 +103,21 @@ export default function JuzList({ listContentStyle }: JuzListProps) {
                     verseCount: juz.verse_count,
                 }));
             } else {
-                return mockJuzData;
+                return [];
             }
         } catch (error) {
-            return mockJuzData;
+            return [];
         }
     }, []);
 
-    if (!finalJuzData?.length) return (
-        <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
-            <Text style={{ color: colors.textPrimary, textAlign: 'center' }}>
-                ⚠️ Error: Could not load Juz list data.
-            </Text>
-        </View>
-    );
+    if (!finalJuzData?.length)
+        return (
+            <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
+                <Text style={{ color: colors.textPrimary, textAlign: 'center' }}>
+                    ⚠️ Error: Could not load Juz list data.
+                </Text>
+            </View>
+        );
 
     return (
         <FlatList
@@ -131,13 +125,11 @@ export default function JuzList({ listContentStyle }: JuzListProps) {
             renderItem={({ item }) => <JuzListItem item={item} colors={colors} />}
             keyExtractor={(item) => item.number.toString()}
             contentContainerStyle={[styles.listContentContainer, listContentStyle]}
-            ItemSeparatorComponent={() => (
-                <ListSeparator color={`${colors.textSecondary}20`} />
-            )}
+            ItemSeparatorComponent={() => <ListSeparator color={`${colors.textSecondary}20`} />}
             style={[styles.container, { backgroundColor: colors.background }]}
-            showsVerticalScrollIndicator={false}
             initialNumToRender={15}
             windowSize={21}
+            showsVerticalScrollIndicator={false}
         />
     );
 }
@@ -148,7 +140,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20,
+        padding: 20
     },
     listContentContainer: { paddingVertical: 8 },
     row: {
@@ -156,7 +148,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingVertical: 14,
-        paddingHorizontal: 16,
+        paddingHorizontal: 16
     },
     separator: { height: 1, marginHorizontal: 16 },
     indexNumberContainer: {
@@ -165,16 +157,27 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 16,
+        marginRight: 16
     },
     indexNumberText: { fontWeight: '700', fontSize: 14 },
-    textContainer: { flex: 1, justifyContent: 'center', marginRight: 12 },
-    englishText: { fontSize: 16, fontWeight: '600', letterSpacing: 0.3 },
-    transliterationText: { fontSize: 12, fontWeight: '500', marginTop: 2, opacity: 0.8 },
-    subtitle: { fontSize: 11, fontWeight: '400', marginTop: 2, opacity: 0.7 },
+    textContainer: { flex: 1, justifyContent: 'center' },
+    englishText: { fontSize: 17, fontWeight: '600', letterSpacing: 0.3 },
+    transliterationText: {
+        fontSize: 13,
+        fontWeight: '500',
+        marginTop: 2,
+        opacity: 0.9,
+    },
+    subtitle: {
+        fontSize: 12,
+        fontWeight: '400',
+        marginTop: 2,
+        opacity: 0.7,
+    },
     arabicText: {
-        fontSize: 22,
+        fontSize: 26,
         fontFamily: 'ArabicFont',
         textAlign: 'right',
+        marginLeft: 12
     },
 });

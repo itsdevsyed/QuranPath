@@ -9,7 +9,7 @@ export default function TopNavbar() {
     const { colors, isDarkMode } = useTheme();
 
     return (
-        <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.card }]}>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
             <View style={styles.container}>
                 <Text style={[styles.greetingText, { color: colors.textPrimary }]}>
                     QuranPath
@@ -29,23 +29,24 @@ export default function TopNavbar() {
 
 const styles = StyleSheet.create({
     safeArea: {
-        borderBottomColor: '#E5E7EB',
         borderBottomWidth: 1,
+        borderBottomColor: 'rgba(0,0,0,0.1)',
     },
     container: {
-        height: 64,
+        height: 60,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 16,
     },
     greetingText: {
-        fontSize: 18,
-        fontWeight: '600',
+        fontSize: 20,
+        fontWeight: '700',
+        fontFamily: 'ArabicFont',
     },
     rightGroup: {
         flexDirection: 'row',
         alignItems: 'center',
-        columnGap: 12,
+        gap: 16,
     },
 });

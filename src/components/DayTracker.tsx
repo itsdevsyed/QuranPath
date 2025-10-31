@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     dayBubble: {
         width: 28,
         height: 28,
-        borderRadius: 14,
+        borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 4,

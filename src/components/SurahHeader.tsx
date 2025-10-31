@@ -1,122 +1,133 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 
 interface SurahHeaderProps {
-    name: string;
-    transliteration: string;
-    bismillah?: string;
-    number: number;
-    totalVerses: number;
-    type: 'Meccan' | 'Medinan';
+    name?: string;
+    transliteration?: string;
+    number?: number;
+    totalVerses?: number;
+    type?: 'Meccan' | 'Medinan';
+    showBismillah?: boolean;
 }
 
 const SurahHeader: React.FC<SurahHeaderProps> = ({
-    name,
-    transliteration,
-    bismillah = 'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',
+    name = '',
+    transliteration = '',
     number,
     totalVerses,
-    type,
+    type = 'Meccan',
+    showBismillah = true,
 }) => {
+    const { appTheme } = useTheme();
+    const colors = appTheme.colors;
+
     return (
-        <View style={styles.container}>
-            {bismillah ? (
-                <Text style={styles.bismillah}>{bismillah}</Text>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            {/* Surah Arabic Name */}
+            <Text style={[styles.surahName, { color: colors.textPrimary }]}>
+                {name}
+            </Text>
+
+            {/* Transliteration */}
+            {transliteration ? (
+                <Text style={[styles.transliteration, { color: colors.textSecondary }]}>
+                    {transliteration}
+                </Text>
             ) : null}
 
-            <Text style={styles.arabicName}>{name}</Text>
+            {/* Decorative Divider */}
+            <View style={[styles.decorativeLineContainer]}>
+                <View style={[styles.decorativeLine, { backgroundColor: colors.border }]} />
+            </View>
 
-            <Text style={styles.transliteration}>{transliteration}</Text>
+            {/* Surah Info Row */}
+            <View style={styles.infoRow}>
+                {number && (
+                    <Text style={[styles.infoText, { color: colors.textSecondary }]}>
+                        Surah {number}
+                    </Text>
+                )}
 
-            <View style={styles.metaContainer}>
-                <Text style={styles.metaText}>Surah {number}</Text>
-                <Text style={styles.metaDot}>•</Text>
-                <Text style={styles.metaText}>{totalVerses} Verses</Text>
-                <Text
-                    style={[
-                        styles.typeTag,
-                        type === 'Medinan' ? styles.medinanTag : styles.meccanTag,
-                    ]}
-                >
+                <Text style={[styles.dot, { color: colors.textSecondary }]}>•</Text>
+
+                <Text style={[styles.infoText, { color: colors.textSecondary }]}>
                     {type}
                 </Text>
+
+                {totalVerses && (
+                    <>
+                        <Text style={[styles.dot, { color: colors.textSecondary }]}>•</Text>
+                        <Text style={[styles.infoText, { color: colors.textSecondary }]}>
+                            {totalVerses} Verses
+                        </Text>
+                    </>
+                )}
             </View>
+
+            {/* Optional Bismillah */}
+            {showBismillah && (
+                <Text style={[styles.basmala, { color: colors.textPrimary }]}>
+                    بِسْمِ ٱللّٰهِ ٱلرَّحْمٰنِ ٱلرَّحِيمِ
+                </Text>
+            )}
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        paddingVertical: 8,
+        paddingVertical: 24,
+        paddingHorizontal: 20,
         alignItems: 'center',
-        paddingHorizontal: 12,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderColor: '#ccc',
-        backgroundColor: '#fff',
     },
-
-    bismillah: {
+    surahName: {
         fontFamily: 'ArabicFont',
-        fontSize: 22,
+        fontSize: 30,
+        lineHeight: 40,
         textAlign: 'center',
-        color: '#333',
-        marginBottom: 4,
+        letterSpacing: 1,
     },
-
-    arabicName: {
-        fontFamily: 'ArabicFont',
-        fontSize: 24,
-        fontWeight: '700',
-        textAlign: 'center',
-        color: '#111',
-        marginBottom: 2,
-    },
-
     transliteration: {
-        fontSize: 14,
-        color: '#555',
-        fontWeight: '500',
+        fontSize: 15,
+        marginTop: 4,
+        fontWeight: '400',
+        letterSpacing: 0.3,
         textAlign: 'center',
-        marginBottom: 4,
+        opacity: 0.8,
     },
-
-    metaContainer: {
+    decorativeLineContainer: {
+        alignItems: 'center',
+        marginVertical: 10,
+    },
+    decorativeLine: {
+        width: 80,
+        height: 2,
+        borderRadius: 2,
+        opacity: 0.5,
+    },
+    infoRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 2,
+        justifyContent: 'center',
+        marginBottom: 14,
     },
-
-    metaText: {
-        fontSize: 11,
-        color: '#777',
+    infoText: {
+        fontSize: 13,
         fontWeight: '500',
+        textTransform: 'capitalize',
     },
-
-    metaDot: {
-        fontSize: 12,
-        color: '#aaa',
-        marginHorizontal: 4,
+    dot: {
+        marginHorizontal: 6,
+        fontSize: 14,
+        opacity: 0.7,
     },
-
-    typeTag: {
-        fontSize: 10,
-        fontWeight: 'bold',
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        borderRadius: 6,
-        overflow: 'hidden',
-        marginLeft: 6,
+    basmala: {
+        fontFamily: 'ArabicFont',
+        fontSize: 24,
         textAlign: 'center',
-    },
-
-    medinanTag: {
-        backgroundColor: '#1E40AF',
-        color: '#fff',
-    },
-
-    meccanTag: {
-        backgroundColor: '#D97706',
-        color: '#fff',
+        lineHeight: 36,
+        marginTop: 8,
     },
 });
 
