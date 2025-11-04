@@ -37,7 +37,7 @@ const SurahHeader: React.FC<SurahHeaderProps> = ({
             ) : null}
 
             {/* Decorative Divider */}
-            <View style={[styles.decorativeLineContainer]}>
+            <View style={styles.decorativeLineContainer}>
                 <View style={[styles.decorativeLine, { backgroundColor: colors.border }]} />
             </View>
 
@@ -48,9 +48,7 @@ const SurahHeader: React.FC<SurahHeaderProps> = ({
                         Surah {number}
                     </Text>
                 )}
-
                 <Text style={[styles.dot, { color: colors.textSecondary }]}>•</Text>
-
                 <Text style={[styles.infoText, { color: colors.textSecondary }]}>
                     {type}
                 </Text>
@@ -83,18 +81,19 @@ const styles = StyleSheet.create({
     },
     surahName: {
         fontFamily: 'ArabicFont',
-        fontSize: 30,
-        lineHeight: 40,
+        fontSize: 32,
+        lineHeight: 44,
         textAlign: 'center',
         letterSpacing: 1,
+        marginBottom: 40, // ✅ added spacing after Arabic name
     },
     transliteration: {
         fontSize: 15,
-        marginTop: 4,
         fontWeight: '400',
         letterSpacing: 0.3,
         textAlign: 'center',
         opacity: 0.8,
+        marginBottom: 12, // ✅ extra space below transliteration for balance
     },
     decorativeLineContainer: {
         alignItems: 'center',

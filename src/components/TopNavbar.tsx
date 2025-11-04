@@ -3,7 +3,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../context/ThemeContext';
 import DayTracker from './DayTracker';
-import ThemeToggle from './ThemeToggle';
 
 export default function TopNavbar() {
     const { colors, isDarkMode } = useTheme();
@@ -20,7 +19,6 @@ export default function TopNavbar() {
                         activeDayText={isDarkMode ? '#111827' : '#FFFFFF'}
                         inactiveDayText={isDarkMode ? '#F1F5F9' : '#6B7280'}
                     />
-                    <ThemeToggle />
                 </View>
             </View>
         </SafeAreaView>

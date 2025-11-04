@@ -1,7 +1,9 @@
 // screens/VersesPage.tsx
 import React from 'react';
 import { ScrollView, View, StyleSheet, Text } from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import {  useRoute } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
+
 import quranData from '../../assets/quran/quran.json';
 import SurahHeader from '../components/SurahHeader';
 import AyahText from '../components/AyahText';
@@ -73,8 +75,9 @@ const VersesPage: React.FC = () => {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   textContainer: {
-    // paddingHorizontal: 20,
-    // paddingVertical: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    marginTop: 10, // ✅ adds spacing after the Surah name/header
   },
   errorContainer: {
     flex: 1,

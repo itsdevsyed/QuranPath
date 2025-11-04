@@ -27,8 +27,8 @@ const AyahText: React.FC<AyahTextProps> = ({ text }) => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingVertical: 12,
-        paddingHorizontal: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 8,
     },
     arabicText: {
         fontFamily: 'ArabicFont',

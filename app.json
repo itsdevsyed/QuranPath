@@ -3,6 +3,7 @@
     "name": "QuranPath",
     "slug": "QuranPath",
     "version": "1.0.0",
+    "userInterfaceStyle": "automatic",
         "web": {
       "bundler": "metro"
     },

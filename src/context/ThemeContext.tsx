@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useMemo, ReactNode } from 'react';
+import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 
 const CustomColors = {
@@ -9,7 +9,7 @@ const CustomColors = {
         textSecondary: '#4B5563',
         border: '#E5E7EB',
         primary: '#111',
-        primaryAccent: '#1F2937'
+        primaryAccent: '#1F2937',
     },
     dark: {
         background: '#0A0A0A',
@@ -18,18 +18,16 @@ const CustomColors = {
         textSecondary: '#9CA3AF',
         border: '#2C2C2C',
         primary: '#FFF',
-        primaryAccent: '#F9FAFB'
+        primaryAccent: '#F9FAFB',
     },
 };
 
-// Create theme without Paper dependencies
 const getAppTheme = (isDark: boolean) => {
     const colors = isDark ? CustomColors.dark : CustomColors.light;
     return {
         dark: isDark,
         colors: {
             ...colors,
-            // Add any additional color keys needed for your app
             surface: colors.card,
             onSurface: colors.textPrimary,
             error: '#FF3B30',
@@ -50,7 +48,6 @@ const getAppTheme = (isDark: boolean) => {
 
 interface ThemeContextType {
     isDarkMode: boolean;
-    toggleTheme: () => void;
     appTheme: ReturnType<typeof getAppTheme>;
     colors: typeof CustomColors.light | typeof CustomColors.dark;
 }
@@ -59,17 +56,15 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const systemColorScheme = useColorScheme();
-    const [isDarkMode, setIsDarkMode] = useState(systemColorScheme === 'dark');
+    const isDarkMode = systemColorScheme === 'dark';
 
-    const toggleTheme = () => setIsDarkMode(prev => !prev);
     const appTheme = useMemo(() => getAppTheme(isDarkMode), [isDarkMode]);
     const colors = isDarkMode ? CustomColors.dark : CustomColors.light;
 
     const value = useMemo(() => ({
         isDarkMode,
-        toggleTheme,
         appTheme,
-        colors
+        colors,
     }), [isDarkMode, appTheme, colors]);
 
     return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
