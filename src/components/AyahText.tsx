@@ -14,12 +14,10 @@ const AyahText: React.FC<AyahTextProps> = ({ text }) => {
             <Text
                 style={[
                     styles.arabicText,
-                    {
-                        color: colors.textPrimary,
-                    }
+                    { color: colors.textPrimary },
                 ]}
             >
-                {text.replace(/ /g, '‎ ')}
+                {'\u200F' + text + '\u200F'}
             </Text>
         </View>
     );
@@ -27,16 +25,18 @@ const AyahText: React.FC<AyahTextProps> = ({ text }) => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingVertical: 10,
-        paddingHorizontal: 8,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
     },
     arabicText: {
-        fontFamily: 'ArabicFont',
+        fontFamily: 'ArabicFont',        // use Quran-optimized font if possible
         fontSize: 26,
         lineHeight: 54,
-        writingDirection: 'rtl',
-        textAlign: 'justify',
+        writingDirection: 'rtl',         // enforce RTL direction
+        textAlign: 'justify',            // even line endings
+        includeFontPadding: false,       // cleaner vertical alignment
         textAlignVertical: 'center',
+        letterSpacing: 0.3,
     },
 });
 

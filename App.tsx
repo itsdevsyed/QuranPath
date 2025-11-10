@@ -1,3 +1,4 @@
+
 import "./global.css";
 import React, { useEffect } from "react";
 import { StatusBar, View } from "react-native";
@@ -43,7 +44,7 @@ const AppContentWithTheme = () => {
 export default function App() {
   // Load custom Arabic font
   const [fontsLoaded, fontError] = useFonts({
-    ArabicFont: require("./assets/fonts/Ar.otf"),
+    ArabicFont: require("./assets/fonts/al.ttf"),
   });
 
   // Show loading screen until fonts are ready

@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Dimensions } from 'react-native';
-import { Home, BookOpenText, Mic, Layers3 } from 'lucide-react-native';
+import { Home, BookOpenText, MoonStar, Repeat2,Hourglass  } from 'lucide-react-native';
 import { useTheme } from '../context/ThemeContext';
 import HomeScreen from '../screens/HomeScreen';
 import MushafScreen from '../screens/MushafScreen';
 
-type IconName = 'Home' | 'BookOpenText' | 'Mic' | 'Layers3';
+type IconName = 'Home' | 'BookOpenText' | 'MoonStar' | 'Hourglass' | 'Repeat2';
 
 interface Route {
-  key: 'home' | 'mushaf' | 'tafseer' | 'more';
+  key: 'Home' | 'Mushaf' | 'Tafseer' | 'Salah' | 'Dikr';
   title: string;
   icon: IconName;
 }
 
-const IconMap: Record<IconName, React.FC<any>> = { Home, BookOpenText, Mic, Layers3 };
+const IconMap: Record<IconName, React.FC<any>> = { Home, BookOpenText, MoonStar, Hourglass, Repeat2 };
 
 const PlaceholderScreen = ({ title }: { title: string }) => {
   const { colors } = useTheme();
@@ -30,23 +30,27 @@ export default function BottomNavbar() {
   const screenWidth = Dimensions.get('window').width;
 
   const routes: Route[] = [
-    { key: 'home', title: 'Home', icon: 'Home' },
-    { key: 'mushaf', title: 'Mushaf', icon: 'BookOpenText' },
-    { key: 'tafseer', title: 'Tafseer', icon: 'Mic' },
-    { key: 'more', title: 'More', icon: 'Layers3' },
+    { key: 'Home', title: 'Home', icon: 'Home' },
+    { key: 'Mushaf', title: 'Mushaf', icon: 'BookOpenText' },
+    { key: 'Tafseer', title: 'Tafseer', icon: 'MoonStar' },
+    { key: 'Salah', title: 'Salah', icon: 'Hourglass' },
+    { key: 'Dikr', title: 'Dikr', icon: 'Repeat2' },
+
   ];
 
   const renderScene = () => {
     const route = routes[index];
     switch (route.key) {
-      case 'home':
+      case 'Home':
         return <HomeScreen />;
-      case 'mushaf':
+      case 'Mushaf':
         return <MushafScreen />;
-      case 'tafseer':
+      case 'Tafseer':
         return <PlaceholderScreen title="Tafseer" />;
-      case 'more':
-        return <PlaceholderScreen title="More" />;
+      case 'Salah':
+        return <PlaceholderScreen title="Salah" />;
+      case 'Dikr':
+        return <PlaceholderScreen title="Dikr" />;
       default:
         return null;
     }

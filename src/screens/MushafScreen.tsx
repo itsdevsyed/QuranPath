@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import TopNavbar from '../components/TopNavbar';
-// 🌟 IMPORT CHANGES: Import Tab type and JuzList component
-import TabSegment, { Tab } from '../components/TabSegment';
+import TabSegment, { TabItem } from '../components/TabSegment';
 import { useTheme } from '../context/ThemeContext';
 import SurahList from '../components/SurahList';
-import JuzList from '../components/Juz'; // Import the JuzList component
+import JuzList from '../components/Juz'; // JuzList component
 
 const MushafScreen: React.FC = () => {
   const { colors } = useTheme();
 
-  // 🌟 STATE: Keep track of the currently active tab (default to 'surahs')
-  const [activeTab, setActiveTab] = useState<Tab>('surahs');
+  // Dynamic tab data
+  const tabs: TabItem[] = [
+    { key: 'surahs', label: 'Surahs' },
+    { key: 'juz', label: 'Juz' },
+    { key: 'bookmarks', label: 'Bookmarks' },
+  ];
 
-  // 🌟 HELPER FUNCTION: Renders the appropriate list component based on the activeTab
+  // Active tab state
+  const [activeTab, setActiveTab] = useState<string>('surahs');
+
+  // Render content based on active tab
   const renderContent = () => {
     switch (activeTab) {
       case 'surahs':
@@ -21,7 +27,6 @@ const MushafScreen: React.FC = () => {
       case 'juz':
         return <JuzList listContentStyle={styles.listPadding} />;
       case 'bookmarks':
-        // Placeholder for Bookmarks list
         return <View style={styles.emptyContent} />;
       default:
         return null;
@@ -30,20 +35,19 @@ const MushafScreen: React.FC = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-
-      {/* 1. Static Header Content (No scrolling) */}
+      {/* Static Header */}
       <View style={[styles.header, { backgroundColor: colors.background }]}>
         <TopNavbar />
-        {/* 🌟 PROP PASSING: Pass the active state and the setter function to TabSegment */}
+        {/* Reusable TabSegment with dynamic tabs */}
         <TabSegment
+          tabs={tabs}
           activeTab={activeTab}
           onTabChange={setActiveTab}
         />
       </View>
 
-      {/* 2. Scrollable List Content (Conditional Rendering) */}
+      {/* Conditional scrollable content */}
       {renderContent()}
-
     </View>
   );
 };
@@ -52,22 +56,19 @@ export default MushafScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Ensures the entire screen is covered
+    flex: 1,
   },
   header: {
-    // This View contains the static elements that don't scroll
-    zIndex: 1, // Ensures the header is above the list content
-    paddingTop: 16, // Example: for status bar clearance if TopNavbar doesn't handle it
+    zIndex: 1,
+    paddingTop: 16,
   },
   listPadding: {
-    // This style is applied to the FlatList's contentContainerStyle
     paddingHorizontal: 16,
-    paddingBottom: 120, // Padding bottom to avoid BottomNavbar overlap
+    paddingBottom: 120,
   },
   emptyContent: {
     flex: 1,
     paddingHorizontal: 16,
     paddingBottom: 120,
-    // Add styling for when the list is not implemented yet
-  }
+  },
 });

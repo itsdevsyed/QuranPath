@@ -6,18 +6,26 @@ interface QuranTextProps {
 }
 
 const QuranText: React.FC<QuranTextProps> = ({ verseText }) => {
-    return <Text style={styles.arabic}>{verseText}</Text>;
+    return (
+        <Text
+            style={styles.arabic}
+            numberOfLines={0}
+            allowFontScaling={false}
+        >
+            {verseText}
+        </Text>
+    );
 };
 
 const styles = StyleSheet.create({
     arabic: {
-        fontFamily: 'ArabicFont',
-        fontSize: 22,
-        lineHeight: 50, // ✅ more proportional (not too tall)
-        textAlign: 'right',
+        fontFamily: 'ArabicFont',      // Replace with your Arabic/Quran font
+        fontSize: 30,
+        lineHeight: 50,                // proportional spacing
+        textAlign: 'justify',          // fixes last line alignment
+        writingDirection: 'rtl',       // ensures lines start from the right
+        marginBottom: 8,
         color: '#111',
-        writingDirection: 'rtl',
-        marginBottom: 8, // ✅ prevents clipping when stacked
     },
 });
 
