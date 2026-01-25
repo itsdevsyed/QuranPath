@@ -14,7 +14,7 @@ const AyahText: React.FC<AyahTextProps> = ({ text }) => {
             <Text
                 style={[
                     styles.arabicText,
-                    { color: colors.textPrimary },
+                    { color: colors.textPrimary }
                 ]}
             >
                 {'\u200F' + text + '\u200F'}
@@ -29,12 +29,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     arabicText: {
+        // DO NOT add fontFamily here—your global font handles it
         fontFamily: 'ArabicFont',        // use Quran-optimized font if possible
-        fontSize: 26,
+        fontSize: 36,
         lineHeight: 54,
-        writingDirection: 'rtl',         // enforce RTL direction
-        textAlign: 'justify',            // even line endings
-        includeFontPadding: false,       // cleaner vertical alignment
+        writingDirection: 'rtl',
+        textAlign: 'justify',
+        includeFontPadding: false,
         textAlignVertical: 'center',
         letterSpacing: 0.3,
     },

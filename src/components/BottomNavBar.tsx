@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Dimensions } from 'react-native';
-import { Home, BookOpenText, MoonStar, Repeat2,Hourglass  } from 'lucide-react-native';
+import { Home, BookOpenText, MoonStar, Repeat2, HeartPlus, BadgeInfo } from 'lucide-react-native';
 import { useTheme } from '../context/ThemeContext';
 import HomeScreen from '../screens/HomeScreen';
 import MushafScreen from '../screens/MushafScreen';
 
-type IconName = 'Home' | 'BookOpenText' | 'MoonStar' | 'Hourglass' | 'Repeat2';
+type IconName = 'Home' | 'BookOpenText' | 'MoonStar' | 'HeartPlus'   | 'BadgeInfo' ; 
 
 interface Route {
-  key: 'Home' | 'Mushaf' | 'Tafseer' | 'Salah' | 'Dikr';
+  key: 'Home' | 'Mushaf' | 'Tafseer' | 'Dikr' | 'About';
   title: string;
   icon: IconName;
 }
 
-const IconMap: Record<IconName, React.FC<any>> = { Home, BookOpenText, MoonStar, Hourglass, Repeat2 };
+const IconMap: Record<IconName, React.FC<any>> = { Home, BookOpenText, MoonStar , HeartPlus, BadgeInfo};
 
 const PlaceholderScreen = ({ title }: { title: string }) => {
   const { colors } = useTheme();
@@ -33,8 +33,8 @@ export default function BottomNavbar() {
     { key: 'Home', title: 'Home', icon: 'Home' },
     { key: 'Mushaf', title: 'Mushaf', icon: 'BookOpenText' },
     { key: 'Tafseer', title: 'Tafseer', icon: 'MoonStar' },
-    { key: 'Salah', title: 'Salah', icon: 'Hourglass' },
-    { key: 'Dikr', title: 'Dikr', icon: 'Repeat2' },
+    { key: 'Dikr', title: 'Dikr', icon: 'HeartPlus' },
+    { key: 'About', title: 'About', icon: 'BadgeInfo' },
 
   ];
 
@@ -47,10 +47,11 @@ export default function BottomNavbar() {
         return <MushafScreen />;
       case 'Tafseer':
         return <PlaceholderScreen title="Tafseer" />;
-      case 'Salah':
-        return <PlaceholderScreen title="Salah" />;
       case 'Dikr':
         return <PlaceholderScreen title="Dikr" />;
+      case 'About':
+        return <PlaceholderScreen title="About" />;
+
       default:
         return null;
     }
@@ -60,7 +61,6 @@ export default function BottomNavbar() {
     <View style={styles.container}>
       <View style={styles.content}>{renderScene()}</View>
 
-      {/* Transparent Floating Bottom Tab Bar */}
       <View
         style={[
           styles.floatingBar,
@@ -136,5 +136,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingBottom: 80
   },
 });

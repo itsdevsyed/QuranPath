@@ -11,11 +11,9 @@ import AppNavigator from "./src/navigation/AppNavigator";
 import AppLoading from "./src/components/AppLoading";
 import ErrorBoundary from "./src/components/ErrorBoundary";
 
-// ⚡ Inner content that reacts to theme changes
 const AppContentWithTheme = () => {
   const { appTheme, isDarkMode } = useTheme();
 
-  // Sync status bar background instantly when theme changes
   useEffect(() => {
     StatusBar.setBackgroundColor(
       appTheme.colors?.background || "#ffffff",
@@ -44,7 +42,7 @@ const AppContentWithTheme = () => {
 export default function App() {
   // Load custom Arabic font
   const [fontsLoaded, fontError] = useFonts({
-    ArabicFont: require("./assets/fonts/al.ttf"),
+    ArabicFont: require("./assets/fonts/Al-Mushaf.ttf"),
   });
 
   // Show loading screen until fonts are ready

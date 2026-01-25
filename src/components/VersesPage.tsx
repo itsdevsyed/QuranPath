@@ -2,9 +2,9 @@
 import React from 'react';
 import { ScrollView, View, StyleSheet, Text } from 'react-native';
 import {  useRoute } from '@react-navigation/native';
-import { RouteProp } from '@react-navigation/native';
+import { useRoutePath } from '@react-navigation/native';
 
-import quranData from '../../assets/quran/quran.json';
+import quranData from '../../assets/quran/quran_structured.json';
 import SurahHeader from '../components/SurahHeader';
 import AyahText from '../components/AyahText';
 import { useTheme } from '../context/ThemeContext';
@@ -29,7 +29,7 @@ const toArabicIndic = (n: number | string | undefined) => {
 
 const VersesPage: React.FC = () => {
   const { appTheme } = useTheme();
-  const route = useRoute<RouteProp<RootStackParamList, 'VersesPage'>>();
+  const route = useRoute<useRoutePath<RootStackParamList, 'VersesPage'>>();
   const surahId = route.params?.surahId;
 
   const surah = Array.isArray(quranData)
@@ -48,7 +48,7 @@ const VersesPage: React.FC = () => {
   const fullText = surah.verses
     .map((ayah: any, idx: number) => {
       const num = ayah.id ?? idx + 1;
-      return `${ayah.text} ${toArabicIndic(num)}`;
+      return `${ayah.text} ﴿${toArabicIndic(num)}﴾`;
     })
     .join(' ');
 
