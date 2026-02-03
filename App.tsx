@@ -1,5 +1,4 @@
 
-import "./global.css";
 import React, { useEffect } from "react";
 import { StatusBar, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -42,7 +41,8 @@ const AppContentWithTheme = () => {
 export default function App() {
   // Load custom Arabic font
   const [fontsLoaded, fontError] = useFonts({
-    ArabicFont: require("./assets/fonts/Al-Mushaf.ttf"),
+    ArabicFont: require("./assets/fonts/noorehuda_font.ttf"),
+
   });
 
   // Show loading screen until fonts are ready

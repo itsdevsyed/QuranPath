@@ -28,7 +28,7 @@ export default function ContinueReadingCard() {
         ? { shadowColor: '#000', shadowOpacity: 0.3, shadowOffset: { width: 0, height: 2 }, shadowRadius: 4, elevation: 3 }
         : { shadowColor: 'rgba(0,0,0,0.1)', shadowOpacity: 0.3, shadowOffset: { width: 0, height: 4 }, shadowRadius: 6, elevation: 5 };
 
-    const styles = StyleSheet.create({
+    const styles = StyleSheet.create({  
         cardContainer: {
             width: width - 24,
             alignSelf: 'center',

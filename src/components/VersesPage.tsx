@@ -1,7 +1,6 @@
-// screens/VersesPage.tsx
 import React from 'react';
 import { ScrollView, View, StyleSheet, Text } from 'react-native';
-import {  useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { useRoutePath } from '@react-navigation/native';
 
 import quranData from '../../assets/quran/quran_structured.json';
@@ -16,16 +15,16 @@ type RootStackParamList = {
   };
 };
 
-// convert integer (1,2,10,123) -> Arabic-Indic string ("١","٢","١٠","١٢٣")
+// Convert integer to Arabic-Indic digits
 const toArabicIndic = (n: number | string | undefined) => {
   if (n == null) return '';
   const s = String(n);
-  const map = ['\u0660', '\u0661', '\u0662', '\u0663', '\u0664', '\u0665', '\u0666', '\u0667', '\u0668', '\u0669'];
-  return s.split('').map(ch => {
-    if (/\d/.test(ch)) return map[Number(ch)];
-    return ch;
-  }).join('');
+  const map = ['\u0660','\u0661','\u0662','\u0663','\u0664','\u0665','\u0666','\u0667','\u0668','\u0669'];
+  return s.split('').map(ch => (/\d/.test(ch) ? map[Number(ch)] : ch)).join('');
 };
+
+// Right-to-left isolate wrapper for ayah markers
+const wrapAyahMarker = (num: number) => `${toArabicIndic(num)}`;
 
 const VersesPage: React.FC = () => {
   const { appTheme } = useTheme();
@@ -44,11 +43,11 @@ const VersesPage: React.FC = () => {
     );
   }
 
-  // Build continuous text with Arabic-Indic ayah numbers like: "... text ﴿١﴾ ... ﴿٢﴾ ..."
+
   const fullText = surah.verses
     .map((ayah: any, idx: number) => {
       const num = ayah.id ?? idx + 1;
-      return `${ayah.text} ﴿${toArabicIndic(num)}﴾`;
+      return `${ayah.text} ${wrapAyahMarker(num)}`;
     })
     .join(' ');
 
@@ -65,9 +64,15 @@ const VersesPage: React.FC = () => {
         type={surah.type === 'medinan' ? 'Medinan' : 'Meccan'}
       />
 
-      <View style={styles.textContainer}>
-        <AyahText text={fullText} />
-      </View>
+<View style={styles.textContainer}>
+  {surah.verses.map((ayah: any, idx: number) => (
+    <AyahText
+      key={ayah.id ?? idx}
+      text={ayah.text}
+      ayahNumber={ayah.id ?? idx + 1}
+    />
+  ))}
+</View>
     </ScrollView>
   );
 };
@@ -77,7 +82,7 @@ const styles = StyleSheet.create({
   textContainer: {
     paddingHorizontal: 20,
     paddingVertical: 24,
-    marginTop: 10, // ✅ adds spacing after the Surah name/header
+    marginTop: 10,
   },
   errorContainer: {
     flex: 1,
