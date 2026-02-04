@@ -64,15 +64,22 @@ const VersesPage: React.FC = () => {
         type={surah.type === 'medinan' ? 'Medinan' : 'Meccan'}
       />
 
-<View style={styles.textContainer}>
-  {surah.verses.map((ayah: any, idx: number) => (
-    <AyahText
-      key={ayah.id ?? idx}
-      text={ayah.text}
-      ayahNumber={ayah.id ?? idx + 1}
-    />
-  ))}
-</View>
+      <View style={styles.textContainer}>
+        <Text
+          style={{
+            writingDirection: 'rtl',
+            textAlign: 'justify',
+          }}
+        >
+          {surah.verses.map((ayah: any, idx: number) => (
+            <AyahText
+              key={ayah.id ?? idx}
+              text={ayah.text}
+              ayahNumber={ayah.id ?? idx + 1}
+            />
+          ))}
+        </Text>
+      </View>
     </ScrollView>
   );
 };

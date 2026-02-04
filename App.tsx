@@ -42,6 +42,7 @@ export default function App() {
   // Load custom Arabic font
   const [fontsLoaded, fontError] = useFonts({
     ArabicFont: require("./assets/fonts/noorehuda_font.ttf"),
+    DesignFont: require("./assets/fonts/Arabic.ttf"),
 
   });
 

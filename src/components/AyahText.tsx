@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { toArabicIndic } from '../utils/ayahOrnament';
 
@@ -7,52 +7,37 @@ interface AyahTextProps {
   text: string;
   ayahNumber: number;
 }
+const BASE_LINE_HEIGHT = 56;
 
 const AyahText: React.FC<AyahTextProps> = ({ text, ayahNumber }) => {
   const { colors } = useTheme();
 
   return (
-    <View style={styles.container}>
+    <>
       <Text style={[styles.arabicText, { color: colors.textPrimary }]}>
-        {text}
-        <Text style={styles.ayahWrapper}>
-          <Text style={styles.ayahSymbol}> ۝ </Text>
-          <Text style={styles.ayahNumber}>
-            {toArabicIndic(ayahNumber)}
-          </Text>
-        </Text>
+        {text}{' '}
       </Text>
-    </View>
+      <Text style={styles.marker}>
+        ۝{toArabicIndic(ayahNumber)}{' '}
+      </Text>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 14,
-  },
-
   arabicText: {
-    fontFamily: 'ArabicFont',   // NoorHuda
+    fontFamily: 'ArabicFont',
     fontSize: 34,
-    lineHeight: 56,
+    lineHeight: BASE_LINE_HEIGHT,
     writingDirection: 'rtl',
-    textAlign: 'right',
+    textAlign: 'justify',
     includeFontPadding: false,
   },
-
-  ayahWrapper: {
-    fontFamily: 'ArabicFont',
-  },
-
-  ayahSymbol: {
-    fontSize:18,     // slightly smaller than main text
-    opacity: 0.9,
-  },
-
-  ayahNumber: {
-    fontSize: 42,     // BIGGER than before
-    fontWeight: '100',
-    letterSpacing: 1,
+  marker: {
+    fontFamily: 'Amiri',
+    fontSize: 22,
+    lineHeight: BASE_LINE_HEIGHT, // 👈 SAME LINE HEIGHT
+    includeFontPadding: false,
   },
 });
 
