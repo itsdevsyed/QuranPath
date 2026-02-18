@@ -38,18 +38,14 @@ export async function fetchVersesBySurah(surahId: number) {
   `);
 }
 
-export async function fetchVersesByJuzz(surahId: number) {
-  const db = getDb();
-  return db.getAllSync(`
-SELECT
-    juz AS juz_number,
-    MIN(surah_id) AS first_surah_id,
-    MAX(surah_id) AS last_surah_id,
-    COUNT(*) AS verse_count,
-    MIN(surah_id) || ':' || MIN(ayah_no) AS start_verse,
-    MAX(surah_id) || ':' || MAX(ayah_no) AS end_verse
-FROM verse
-GROUP BY juz
-ORDER BY juz ASC;
-  `);
-}
+export const getVersesByJuz = (juzNumber: number) => {
+    const db = getDb();
+
+    return db.getAllSync(
+        `SELECT id, surah_id, ayah_no, text 
+         FROM verse 
+         WHERE juz = ? 
+         ORDER BY surah_id, ayah_no ASC`,
+        [juzNumber]
+    );
+};
