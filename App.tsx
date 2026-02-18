@@ -1,10 +1,10 @@
 
-import React, { useEffect } from "react";
-import { StatusBar, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StatusBar, useColorScheme, View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
-
+import { initDb, getDb } from "./src/db/database";  
 import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
 import AppNavigator from "./src/navigation/AppNavigator";
 import AppLoading from "./src/components/AppLoading";
@@ -12,13 +12,33 @@ import ErrorBoundary from "./src/components/ErrorBoundary";
 
 const AppContentWithTheme = () => {
   const { appTheme, isDarkMode } = useTheme();
-
+  const colorScheme = useColorScheme();
+  const [dbReady, setDbReady] = useState(false);
   useEffect(() => {
     StatusBar.setBackgroundColor(
       appTheme.colors?.background || "#ffffff",
       true
     );
   }, [appTheme.colors?.background]);
+  useEffect(() => {
+    (async () => {
+      try {
+        await initDb();
+        setDbReady(true);
+        console.log('DB ready');
+      } catch (e) {
+        console.error('DB init failed', e);
+      }
+    })();
+  }, []);
+
+  if (!dbReady) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Loading database…</Text>
+      </View>
+    );
+  }
 
   return (
     <View
@@ -42,7 +62,7 @@ export default function App() {
   // Load custom Arabic font
   const [fontsLoaded, fontError] = useFonts({
     ArabicFont: require("./assets/fonts/noorehuda_font.ttf"),
-    DesignFont: require("./assets/fonts/Arabic.ttf"),
+    DesignFont: require("./assets/fonts/kitab_regular.ttf"),
 
   });
 

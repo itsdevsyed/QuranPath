@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import {
     FlatList,
     StyleSheet,
@@ -10,7 +10,8 @@ import {
 import { useTheme } from '../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import juzzData from '../../assets/quran/Juzz.json';
+import juzzNames from '../../assets/quran/Juzz.json';
+import { getDb } from '../db/database'; // your SQLite DB accessor
 
 type RootStackParamList = {
     JuzVersesPage: {
@@ -29,13 +30,14 @@ type JuzListItemData = {
     arabic: string;
     english: string;
     transliteration: string;
-    surahRange: string;
-    verseCount: number;
+    first_surah_id: number;
+    last_surah_id: number;
+    verse_count: number;
+    start_verse: string;
+    end_verse: string;
 };
 
-type JuzListProps = {
-    listContentStyle?: ViewStyle;
-};
+type JuzListProps = { listContentStyle?: ViewStyle };
 
 const JuzListItem = memo(({ item, colors }: { item: JuzListItemData; colors: any }) => {
     const navigation = useNavigation<JuzListNavigationProp>();
@@ -50,19 +52,13 @@ const JuzListItem = memo(({ item, colors }: { item: JuzListItemData; colors: any
     const indexContainerStyle = {
         borderColor: colors.primaryAccent,
         borderWidth: 1.5,
-        backgroundColor: colors.isDarkMode ? `${colors.primaryAccent}15` : `${colors.primaryAccent}10`
+        backgroundColor: colors.isDarkMode ? `${colors.primaryAccent}15` : `${colors.primaryAccent}10`,
     };
 
     return (
-        <TouchableOpacity
-            style={styles.row}
-            activeOpacity={0.65}
-            onPress={handlePress}
-        >
+        <TouchableOpacity style={styles.row} activeOpacity={0.65} onPress={handlePress}>
             <View style={[styles.indexNumberContainer, indexContainerStyle]}>
-                <Text style={[styles.indexNumberText, { color: colors.primaryAccent }]}>
-                    {item.number}
-                </Text>
+                <Text style={[styles.indexNumberText, { color: colors.primaryAccent }]}>{item.number}</Text>
             </View>
 
             <View style={styles.textContainer}>
@@ -73,7 +69,7 @@ const JuzListItem = memo(({ item, colors }: { item: JuzListItemData; colors: any
                     {item.transliteration}
                 </Text>
                 <Text style={[styles.subtitle, { color: colors.textSecondary }]} numberOfLines={1}>
-                    {item.surahRange} • {item.verseCount} verses
+                    Surahs: {item.first_surah_id}-{item.last_surah_id} • {item.verse_count} verses
                 </Text>
             </View>
 
@@ -90,27 +86,48 @@ const ListSeparator = memo(({ color }: { color: string }) => (
 
 export default function JuzList({ listContentStyle }: JuzListProps) {
     const { colors } = useTheme();
+    const [juzData, setJuzData] = useState<JuzListItemData[]>([]);
 
-    const finalJuzData = useMemo<JuzListItemData[]>(() => {
-        try {
-            if (juzzData && Array.isArray(juzzData) && juzzData.length > 0) {
-                return juzzData.map((juz: any) => ({
-                    number: juz.id,
-                    arabic: juz.arabic_name,
-                    english: juz.english_name,
-                    transliteration: juz.transliteration,
-                    surahRange: juz.surah_range,
-                    verseCount: juz.verse_count,
+    useEffect(() => {
+        const loadJuz = async () => {
+            try {
+                const db = getDb();
+                const rows: any[] = db.getAllSync(`
+                    SELECT
+                        juz AS juz_number,
+                        MIN(surah_id) AS first_surah_id,
+                        MAX(surah_id) AS last_surah_id,
+                        COUNT(*) AS verse_count,
+                        MIN(surah_id) || ':' || MIN(ayah_no) AS start_verse,
+                        MAX(surah_id) || ':' || MAX(ayah_no) AS end_verse
+                    FROM verse
+                    GROUP BY juz
+                    ORDER BY juz ASC;
+                `);
+
+                // Merge with names from JSON
+                const merged = rows.map((r, idx) => ({
+                    number: r.juz_number,
+                    arabic: juzzNames[idx]?.arabic_name || '',
+                    english: juzzNames[idx]?.english_name || '',
+                    transliteration: juzzNames[idx]?.transliteration || '',
+                    first_surah_id: r.first_surah_id,
+                    last_surah_id: r.last_surah_id,
+                    verse_count: r.verse_count,
+                    start_verse: r.start_verse,
+                    end_verse: r.end_verse,
                 }));
-            } else {
-                return [];
+
+                setJuzData(merged);
+            } catch (err) {
+                console.error('Error loading Juz metadata from DB:', err);
             }
-        } catch (error) {
-            return [];
-        }
+        };
+
+        loadJuz();
     }, []);
 
-    if (!finalJuzData?.length)
+    if (!juzData.length) {
         return (
             <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
                 <Text style={{ color: colors.textPrimary, textAlign: 'center' }}>
@@ -118,10 +135,11 @@ export default function JuzList({ listContentStyle }: JuzListProps) {
                 </Text>
             </View>
         );
+    }
 
     return (
         <FlatList
-            data={finalJuzData}
+            data={juzData}
             renderItem={({ item }) => <JuzListItem item={item} colors={colors} />}
             keyExtractor={(item) => item.number.toString()}
             contentContainerStyle={[styles.listContentContainer, listContentStyle]}
@@ -136,48 +154,15 @@ export default function JuzList({ listContentStyle }: JuzListProps) {
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
-    errorContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20
-    },
+    errorContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
     listContentContainer: { paddingVertical: 8 },
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: 14,
-        paddingHorizontal: 16
-    },
+    row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 14, paddingHorizontal: 16 },
     separator: { height: 1, marginHorizontal: 16 },
-    indexNumberContainer: {
-        width: 34,
-        height: 34,
-        borderRadius: 8,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 16
-    },
+    indexNumberContainer: { width: 34, height: 34, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginRight: 16 },
     indexNumberText: { fontWeight: '700', fontSize: 14 },
     textContainer: { flex: 1, justifyContent: 'center' },
     englishText: { fontSize: 17, fontWeight: '600', letterSpacing: 0.3 },
-    transliterationText: {
-        fontSize: 13,
-        fontWeight: '500',
-        marginTop: 2,
-        opacity: 0.9,
-    },
-    subtitle: {
-        fontSize: 12,
-        fontWeight: '400',
-        marginTop: 2,
-        opacity: 0.7,
-    },
-    arabicText: {
-        fontSize: 26,
-        fontFamily: 'ArabicFont',
-        textAlign: 'right',
-        marginLeft: 12
-    },
+    transliterationText: { fontSize: 13, fontWeight: '500', marginTop: 2, opacity: 0.9 },
+    subtitle: { fontSize: 12, fontWeight: '400', marginTop: 2, opacity: 0.7 },
+    arabicText: { fontSize: 26, fontFamily: 'ArabicFont', textAlign: 'right', marginLeft: 12 },
 });

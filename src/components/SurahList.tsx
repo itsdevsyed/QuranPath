@@ -1,9 +1,9 @@
-import React, { memo } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import { FlatList, StyleSheet, Text, View, TouchableOpacity, ViewStyle } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import quranMasterData from '../../assets/quran/quran.json';
+import { fetchAllSurahs } from '../db/queries';
 
 type RootStackParamList = {
     VersesPage: {
@@ -23,74 +23,82 @@ type SurahListItemData = {
     location: string;
 };
 
-type SurahListProps = { listContentStyle?: ViewStyle; };
+type SurahListProps = { listContentStyle?: ViewStyle };
 
-// Fallback data if JSON is empty
-const fallbackSurahList: SurahListItemData[] = [
-    { number: 1, arabic: 'الفاتحة', english: 'Al-Fatiha', translation: 'The Opening', verses: 7, location: 'meccan' },
-    { number: 2, arabic: 'البقرة', english: 'Al-Baqarah', translation: 'The Cow', verses: 286, location: 'medinan' },
-    { number: 3, arabic: 'آل عمران', english: 'Aal-e-Imran', translation: 'The Family of Imran', verses: 200, location: 'medinan' },
-];
+export default function SurahList({ listContentStyle }: SurahListProps) {
+    const { colors } = useTheme();
+    const navigation = useNavigation<SurahListNavigationProp>();
+    const [surahList, setSurahList] = useState<SurahListItemData[]>([]);
 
-// Check if quranMasterData is array or object and extract surahs
-const getSurahList = () => {
-    if (Array.isArray(quranMasterData)) {
-        return quranMasterData.length > 0
-            ? quranMasterData.map((surah: any) => ({
-                number: surah.id,
-                arabic: surah.name,
-                english: surah.transliteration,
-                translation: surah.english_name || 'Surah',
-                verses: surah.total_verses,
-                location: surah.type.toLowerCase(),
-            }))
-            : fallbackSurahList;
-    } else if (quranMasterData && typeof quranMasterData === 'object') {
-        // If it's an object with surahs inside, extract them
-        const surahs = Object.values(quranMasterData);
-        return surahs.length > 0
-            ? surahs.map((surah: any) => ({
-                number: surah.id,
-                arabic: surah.name,
-                english: surah.transliteration,
-                translation: surah.english_name || 'Surah',
-                verses: surah.total_verses,
-                location: surah.type.toLowerCase(),
-            }))
-            : fallbackSurahList;
-    } else {
-        return fallbackSurahList;
-    }
+    useEffect(() => {
+        const loadSurahs = async () => {
+            try {
+                const rows = await fetchAllSurahs();
+                setSurahList(
+                    rows.map((row: any) => ({
+                        number: row.id,
+                        arabic: row.name_arabic,
+                        english: row.name_latin || row.name_english,
+                        translation: row.name_english,
+                        verses: row.total_verse,
+                        location: 'meccan', // Optional: you can add a 'type' column later
+                    }))
+                );
+            } catch (err) {
+                console.error('Error fetching Surahs from DB:', err);
+            }
+        };
+        loadSurahs();
+    }, []);
+
+    if (!surahList.length)
+        return (
+            <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
+                <Text style={{ color: colors.textPrimary, textAlign: 'center' }}>
+                    ⚠️ Loading Surahs...
+                </Text>
+            </View>
+        );
+
+    return (
+        <FlatList
+            data={surahList}
+            renderItem={({ item }) => <SurahListItem item={item} colors={colors} navigation={navigation} />}
+            keyExtractor={(item) => item.number.toString()}
+            contentContainerStyle={[styles.listContentContainer, listContentStyle]}
+            ItemSeparatorComponent={() => <ListSeparator color={`${colors.textSecondary}20`} />}
+            style={[styles.container, { backgroundColor: colors.background }]}
+            initialNumToRender={15}
+            windowSize={21}
+            showsVerticalScrollIndicator={false}
+        />
+    );
+}
+
+type SurahListItemProps = {
+    item: SurahListItemData;
+    colors: any;
+    navigation: SurahListNavigationProp;
 };
 
-const finalSurahList: SurahListItemData[] = getSurahList();
-
-const SurahListItem = memo(({ item, colors }: { item: SurahListItemData; colors: any }) => {
-    const navigation = useNavigation<SurahListNavigationProp>();
-
+const SurahListItem = memo(({ item, colors, navigation }: SurahListItemProps) => {
     const handlePress = () => {
         navigation.navigate('VersesPage', {
             surahId: item.number,
-            title: `${item.english} (${item.arabic})`
+            title: `${item.english} (${item.arabic})`,
         });
     };
 
     const indexContainerStyle = {
         borderColor: colors.primaryAccent,
         borderWidth: 1.5,
-        backgroundColor: colors.isDarkMode ? `${colors.primaryAccent}15` : `${colors.primaryAccent}10`
+        backgroundColor: colors.isDarkMode ? `${colors.primaryAccent}15` : `${colors.primaryAccent}10`,
     };
 
     return (
-        <TouchableOpacity
-            style={styles.row}
-            activeOpacity={0.65}
-            onPress={handlePress}
-        >
+        <TouchableOpacity style={styles.row} activeOpacity={0.65} onPress={handlePress}>
             <View style={[styles.indexNumberContainer, indexContainerStyle]}>
-                <Text style={[styles.indexNumberText, { color: colors.primaryAccent }]}>
-                    {item.number}
-                </Text>
+                <Text style={[styles.indexNumberText, { color: colors.primaryAccent }]}>{item.number}</Text>
             </View>
 
             <View style={styles.textContainer}>
@@ -113,65 +121,16 @@ const ListSeparator = memo(({ color }: { color: string }) => (
     <View style={[styles.separator, { backgroundColor: color }]} />
 ));
 
-export default function SurahList({ listContentStyle }: SurahListProps) {
-    const { colors } = useTheme();
-
-    if (!finalSurahList?.length) return (
-        <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
-            <Text style={{ color: colors.textPrimary, textAlign: 'center' }}>
-                ⚠️ Error: Could not load Surah list data.
-            </Text>
-        </View>
-    );
-
-    return (
-        <FlatList
-            data={finalSurahList}
-            renderItem={({ item }) => <SurahListItem item={item} colors={colors} />}
-            keyExtractor={(item) => item.number.toString()}
-            contentContainerStyle={[styles.listContentContainer, listContentStyle]}
-            ItemSeparatorComponent={() => <ListSeparator color={`${colors.textSecondary}20`} />}
-            style={[styles.container, { backgroundColor: colors.background }]}
-            initialNumToRender={15}
-            windowSize={21}
-            showsVerticalScrollIndicator={false}
-        />
-    );
-}
-
 const styles = StyleSheet.create({
     container: { flex: 1 },
-    errorContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20
-    },
+    errorContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
     listContentContainer: { paddingVertical: 8 },
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: 14,
-        paddingHorizontal: 16
-    },
+    row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 14, paddingHorizontal: 16 },
     separator: { height: 1, marginHorizontal: 16 },
-    indexNumberContainer: {
-        width: 34,
-        height: 34,
-        borderRadius: 8,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 16
-    },
+    indexNumberContainer: { width: 34, height: 34, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginRight: 16 },
     indexNumberText: { fontWeight: '700', fontSize: 14 },
     textContainer: { flex: 1, justifyContent: 'center' },
     englishText: { fontSize: 17, fontWeight: '600', letterSpacing: 0.3 },
     subtitle: { fontSize: 12, fontWeight: '400', marginTop: 2, opacity: 0.7 },
-    arabicText: {
-        fontSize: 26,
-        fontFamily: 'ArabicFont',
-        textAlign: 'right',
-        marginLeft: 12
-    },
+    arabicText: { fontSize: 26, fontFamily: 'ArabicFont', textAlign: 'right', marginLeft: 12 },
 });

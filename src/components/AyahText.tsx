@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     includeFontPadding: false,
   },
   marker: {
-    fontFamily: 'Amiri',
+    fontFamily: 'DesignFont',
     fontSize: 22,
     lineHeight: BASE_LINE_HEIGHT, // 👈 SAME LINE HEIGHT
     includeFontPadding: false,

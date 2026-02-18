@@ -1,12 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View, StyleSheet, Text } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import { useRoutePath } from '@react-navigation/native';
-
-import quranData from '../../assets/quran/quran_structured.json';
 import SurahHeader from '../components/SurahHeader';
 import AyahText from '../components/AyahText';
 import { useTheme } from '../context/ThemeContext';
+import { fetchSurahById, fetchVersesBySurah } from '../db/queries';
 
 type RootStackParamList = {
   VersesPage: {
@@ -19,7 +17,7 @@ type RootStackParamList = {
 const toArabicIndic = (n: number | string | undefined) => {
   if (n == null) return '';
   const s = String(n);
-  const map = ['\u0660','\u0661','\u0662','\u0663','\u0664','\u0665','\u0666','\u0667','\u0668','\u0669'];
+  const map = ['\u0660', '\u0661', '\u0662', '\u0663', '\u0664', '\u0665', '\u0666', '\u0667', '\u0668', '\u0669'];
   return s.split('').map(ch => (/\d/.test(ch) ? map[Number(ch)] : ch)).join('');
 };
 
@@ -28,12 +26,25 @@ const wrapAyahMarker = (num: number) => `${toArabicIndic(num)}`;
 
 const VersesPage: React.FC = () => {
   const { appTheme } = useTheme();
-  const route = useRoute<useRoutePath<RootStackParamList, 'VersesPage'>>();
+  const route = useRoute<any>();
   const surahId = route.params?.surahId;
 
-  const surah = Array.isArray(quranData)
-    ? quranData.find(s => s.id === surahId)
-    : null;
+  const [surah, setSurah] = useState<any | null>(null);
+  const [verses, setVerses] = useState<any[]>([]);
+
+  useEffect(() => {
+    const loadSurah = async () => {
+      try {
+        const s = await fetchSurahById(surahId); // fetch Surah metadata
+        const v = await fetchVersesBySurah(surahId); // fetch verses
+        setSurah(s);
+        setVerses(v);
+      } catch (err) {
+        console.error('Error loading Surah/Verses from DB:', err);
+      }
+    };
+    loadSurah();
+  }, [surahId]);
 
   if (!surah) {
     return (
@@ -43,39 +54,26 @@ const VersesPage: React.FC = () => {
     );
   }
 
-
-  const fullText = surah.verses
-    .map((ayah: any, idx: number) => {
-      const num = ayah.id ?? idx + 1;
-      return `${ayah.text} ${wrapAyahMarker(num)}`;
-    })
-    .join(' ');
-
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: appTheme.colors.background }]}
       showsVerticalScrollIndicator={false}
     >
       <SurahHeader
-        name={surah.name}
-        transliteration={surah.transliteration}
+        name={surah.name_arabic}
+        transliteration={surah.name_latin}
         number={surah.id}
-        totalVerses={surah.total_verses}
-        type={surah.type === 'medinan' ? 'Medinan' : 'Meccan'}
+        totalVerses={surah.total_verse}
+        type={'Meccan'} // optional: fetch from DB if you add column
       />
 
       <View style={styles.textContainer}>
-        <Text
-          style={{
-            writingDirection: 'rtl',
-            textAlign: 'justify',
-          }}
-        >
-          {surah.verses.map((ayah: any, idx: number) => (
+        <Text style={{ writingDirection: 'rtl', textAlign: 'justify' }}>
+          {verses.map((ayah, idx) => (
             <AyahText
               key={ayah.id ?? idx}
               text={ayah.text}
-              ayahNumber={ayah.id ?? idx + 1}
+              ayahNumber={ayah.ayah_no}
             />
           ))}
         </Text>
