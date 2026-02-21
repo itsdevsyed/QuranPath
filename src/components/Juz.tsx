@@ -109,7 +109,7 @@ export default function JuzList({ listContentStyle }: JuzListProps) {
                 const merged = rows.map((r, idx) => ({
                     number: r.juz_number,
                     arabic: juzzNames[idx]?.arabic_name || '',
-                    english: juzzNames[idx]?.english_name || '',
+                    english: juzzNames[idx]?.transliteration || '',
                     transliteration: juzzNames[idx]?.transliteration || '',
                     first_surah_id: r.first_surah_id,
                     last_surah_id: r.last_surah_id,
