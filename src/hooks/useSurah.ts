@@ -6,7 +6,7 @@ export type Surah = {
   name_arabic: string;
   name_latin: string;
   total_verse: number;
-  type?: string;
+  type: string;
 };
 
 export type Verse = {
@@ -23,14 +23,20 @@ export function useSurah(surahId: number) {
   useEffect(() => {
     async function load() {
       try {
+        setLoading(true);
+
         const s = await fetchSurahById(surahId);
         const v = await fetchVersesBySurah(surahId);
+
         setSurah(s);
         setVerses(v);
+      } catch (err) {
+        console.error('Error loading surah:', err);
       } finally {
         setLoading(false);
       }
     }
+
     load();
   }, [surahId]);
 

@@ -1,14 +1,14 @@
 
-import React, { useEffect, useState } from "react";
-import { StatusBar, useColorScheme, View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
-import { initDb, getDb } from "./src/db/database";
-import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
-import AppNavigator from "./src/navigation/AppNavigator";
+import React, { useEffect, useState } from "react";
+import { StatusBar, Text, useColorScheme, View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import AppLoading from "./src/components/AppLoading";
 import ErrorBoundary from "./src/components/ErrorBoundary";
+import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
+import { initDb } from "./src/db/database";
+import AppNavigator from "./src/navigation/AppNavigator";
 
 const AppContentWithTheme = () => {
   const { appTheme, isDarkMode } = useTheme();
@@ -62,7 +62,7 @@ export default function App() {
   // Load custom Arabic font
   const [fontsLoaded, fontError] = useFonts({
     ArabicFont: require("./assets/fonts/noorehuda_font.ttf"),
-    DesignFont: require("./assets/fonts/kitab_regular.ttf"),
+    DesignFont: require("./assets/fonts/third.ttf"),
 
   });
 

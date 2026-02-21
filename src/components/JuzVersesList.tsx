@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { useJuzVerses } from '../hooks/useJuzVerses';
-import SurahSection from './SurahSection';
+import { SurahSection } from './SurahSection';
 
 type Props = {
   juzNumber: number;

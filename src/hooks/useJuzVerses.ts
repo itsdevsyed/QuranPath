@@ -11,7 +11,7 @@ export type Verse = {
 export type SurahGroup = {
   surahName: string;
   totalVerses: number;
-  type: "Meccan" | "Medinan";
+  type: string;
   showBismillah: boolean;
   surahId: number;
   verses: Verse[];
@@ -24,6 +24,8 @@ export function useJuzVerses(juzNumber: number) {
   useEffect(() => {
     async function load() {
       try {
+        setLoading(true);
+
         const rows: Verse[] = await getVersesByJuz(juzNumber);
 
         const grouped: Record<number, Verse[]> = {};
@@ -43,17 +45,21 @@ export function useJuzVerses(juzNumber: number) {
 
           const meta = await fetchSurahById(surahId);
 
+          if (!meta) continue;
+
           result.push({
             surahId,
             surahName: meta.name_arabic,
             totalVerses: meta.total_verse,
-            type: meta.type === "Meccan" ? "Meccan" : "Medinan",
+            type: meta.type, // directly from DB
             showBismillah: surahId !== 9,
             verses: grouped[surahId],
           });
         }
 
         setData(result);
+      } catch (err) {
+        console.error('Error loading juz verses:', err);
       } finally {
         setLoading(false);
       }

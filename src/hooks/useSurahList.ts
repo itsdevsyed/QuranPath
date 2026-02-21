@@ -1,26 +1,35 @@
 import { useEffect, useState } from 'react';
-import { fetchAllSurahs } from '../db/queries'; // make sure this path is correct
+import { fetchAllSurahs } from '../db/queries';
+
+type SurahListItem = {
+  number: number;
+  arabic: string;
+  english: string;
+  translation: string;
+  verses: number;
+  location: string;
+};
 
 export const useSurahList = () => {
-  const [surahList, setSurahList] = useState<any[]>([]);
+  const [surahList, setSurahList] = useState<SurahListItem[]>([]);
 
   useEffect(() => {
     const loadSurahs = async () => {
       try {
-        const rows = await fetchAllSurahs(); // fetch all columns from surah table
+        const rows = await fetchAllSurahs();
 
         const mapped = rows.map((row: any) => ({
           number: row.id,
           arabic: row.name_arabic,
           english: row.name_latin || row.name_english,
           translation: row.name_english,
-          verses: row.total_verse, // matches DB column exactly
-          location: 'meccan', // optional, can add 'type' column to surah table later
+          verses: row.total_verse,
+          location: row.type, // 🔥 coming from DB now
         }));
 
         setSurahList(mapped);
       } catch (err) {
-        console.error('Error fetching Surahs from DB:', err);
+        console.error('Error fetching Surahs:', err);
       }
     };
 
