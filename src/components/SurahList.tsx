@@ -1,9 +1,9 @@
-import React, { useEffect, useState, memo } from 'react';
+import React, { memo } from 'react';
 import { FlatList, StyleSheet, Text, View, TouchableOpacity, ViewStyle } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { fetchAllSurahs } from '../db/queries';
+import { useSurahList } from '../hooks/useSurahList';
 
 type RootStackParamList = {
     VersesPage: {
@@ -28,28 +28,7 @@ type SurahListProps = { listContentStyle?: ViewStyle };
 export default function SurahList({ listContentStyle }: SurahListProps) {
     const { colors } = useTheme();
     const navigation = useNavigation<SurahListNavigationProp>();
-    const [surahList, setSurahList] = useState<SurahListItemData[]>([]);
-
-    useEffect(() => {
-        const loadSurahs = async () => {
-            try {
-                const rows = await fetchAllSurahs();
-                setSurahList(
-                    rows.map((row: any) => ({
-                        number: row.id,
-                        arabic: row.name_arabic,
-                        english: row.name_latin || row.name_english,
-                        translation: row.name_english,
-                        verses: row.total_verse,
-                        location: 'meccan', // Optional: you can add a 'type' column later
-                    }))
-                );
-            } catch (err) {
-                console.error('Error fetching Surahs from DB:', err);
-            }
-        };
-        loadSurahs();
-    }, []);
+    const surahList = useSurahList();
 
     if (!surahList.length)
         return (

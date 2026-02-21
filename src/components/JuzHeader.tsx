@@ -2,70 +2,92 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 
-interface ModernJuzHeaderProps {
-    title: string;
-    juzNumber: number;
-    verseCount: number;
-}
+type Props = {
+  juzNumber: number | string;
+  title: string;
+};
 
-const ModernJuzHeader: React.FC<ModernJuzHeaderProps> = ({ title, juzNumber, verseCount }) => {
-    const { colors } = useTheme();
+const JuzHeader: React.FC<Props> = ({ juzNumber, title }) => {
+  const { appTheme } = useTheme();
 
-    return (
-        <View style={[styles.container, { backgroundColor: colors.card }]}>
-            <View style={styles.inner}>
-                <Text style={[styles.juzBadge, { color: colors.primary, borderColor: colors.primary }]}>
-                    Juz {juzNumber}
-                </Text>
-
-                <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={2}>
-                    {title}
-                </Text>
-
-                <Text style={[styles.subText, { color: colors.textSecondary }]}>
-                    {verseCount} verses
-                </Text>
-            </View>
+  return (
+    <View style={[styles.header, { borderBottomColor: appTheme.colors.border }]}>
+      <View style={styles.headingContent}>
+        {/* Juz Meta */}
+        <View style={styles.juzMeta}>
+          <Text style={[styles.juzLabel, { color: appTheme.colors.primaryAccent }]}>
+            پارہ
+          </Text>
+          <Text style={[styles.juzNumber, { color: appTheme.colors.primaryAccent }]}>
+            {juzNumber}
+          </Text>
         </View>
-    );
+
+        {/* Ornament */}
+        <Text style={[styles.ornament, { color: appTheme.colors.primaryAccent }]}>◈</Text>
+
+        {/* Optional Title */}
+        {title && (
+          <Text style={[styles.headerTitle, { color: appTheme.colors.textPrimary }]}>
+            {title}
+          </Text>
+        )}
+      </View>
+
+      {/* Decorative line accent */}
+      <View style={[styles.accentLine, { backgroundColor: appTheme.colors.primaryAccent }]} />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: 'rgba(0,0,0,0.1)',
-        paddingVertical: 28,
-        paddingHorizontal: 20,
-        shadowColor: '#000',
-        shadowOpacity: 0.05,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 6,
-        elevation: 3,
-    },
-    inner: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    juzBadge: {
-        fontSize: 13,
-        fontWeight: '600',
-        borderWidth: 1.2,
-        borderRadius: 50,
-        paddingVertical: 4,
-        paddingHorizontal: 12,
-        marginBottom: 10,
-    },
-    title: {
-        fontSize: 26,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        lineHeight: 50,
-        marginBottom: 10,
-    },
-    subText: {
-        fontSize: 14,
-        opacity: 0.8,
-    },
+  header: {
+    width: '100%',
+    maxWidth: 480,
+    alignItems: 'center',
+    marginBottom: 32,
+    paddingBottom: 16,
+    borderBottomWidth: 2,
+    position: 'relative',
+  },
+  headingContent: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'center',
+    gap: 16,
+  },
+  juzMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  juzLabel: {
+    fontFamily: 'DesignFont',
+    fontSize: 28,
+    letterSpacing: 2,
+  },
+  juzNumber: {
+    fontFamily: 'DesignFont',
+    fontSize: 26,
+  },
+  ornament: {
+    fontFamily: 'DesignFont',
+    fontSize: 22,
+    marginHorizontal: 6,
+    opacity: 0.7,
+  },
+  headerTitle: {
+    fontFamily: 'DesignFont',
+    fontSize: 28,
+    lineHeight: 36,
+    textAlign: 'center',
+  },
+  accentLine: {
+    width: 70,
+    height: 2,
+    marginTop: 10,
+    borderRadius: 1,
+  },
 });
 
-export default ModernJuzHeader;
+export default JuzHeader;

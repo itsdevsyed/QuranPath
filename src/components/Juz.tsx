@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo } from 'react';
 import {
     FlatList,
     StyleSheet,
@@ -10,8 +10,7 @@ import {
 import { useTheme } from '../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import juzzNames from '../../assets/quran/Juzz.json';
-import { getDb } from '../db/database'; // your SQLite DB accessor
+import { useJuzList } from '../hooks/useJuzList';
 
 type RootStackParamList = {
     JuzVersesPage: {
@@ -86,46 +85,7 @@ const ListSeparator = memo(({ color }: { color: string }) => (
 
 export default function JuzList({ listContentStyle }: JuzListProps) {
     const { colors } = useTheme();
-    const [juzData, setJuzData] = useState<JuzListItemData[]>([]);
-
-    useEffect(() => {
-        const loadJuz = async () => {
-            try {
-                const db = getDb();
-                const rows: any[] = db.getAllSync(`
-                    SELECT
-                        juz AS juz_number,
-                        MIN(surah_id) AS first_surah_id,
-                        MAX(surah_id) AS last_surah_id,
-                        COUNT(*) AS verse_count,
-                        MIN(surah_id) || ':' || MIN(ayah_no) AS start_verse,
-                        MAX(surah_id) || ':' || MAX(ayah_no) AS end_verse
-                    FROM verse
-                    GROUP BY juz
-                    ORDER BY juz ASC;
-                `);
-
-                // Merge with names from JSON
-                const merged = rows.map((r, idx) => ({
-                    number: r.juz_number,
-                    arabic: juzzNames[idx]?.arabic_name || '',
-                    english: juzzNames[idx]?.english_name || '',
-                    transliteration: juzzNames[idx]?.transliteration || '',
-                    first_surah_id: r.first_surah_id,
-                    last_surah_id: r.last_surah_id,
-                    verse_count: r.verse_count,
-                    start_verse: r.start_verse,
-                    end_verse: r.end_verse,
-                }));
-
-                setJuzData(merged);
-            } catch (err) {
-                console.error('Error loading Juz metadata from DB:', err);
-            }
-        };
-
-        loadJuz();
-    }, []);
+    const juzData = useJuzList();
 
     if (!juzData.length) {
         return (

@@ -13,14 +13,10 @@ const AyahText: React.FC<AyahTextProps> = ({ text, ayahNumber }) => {
   const { colors } = useTheme();
 
   return (
-    <>
-      <Text style={[styles.arabicText, { color: colors.textPrimary }]}>
-        {text}{' '}
-      </Text>
-      <Text style={styles.marker}>
-        ۝{toArabicIndic(ayahNumber)}{' '}
-      </Text>
-    </>
+    <Text style={[styles.arabicText, { color: colors.textPrimary }]}>
+      {text}{' '}
+      <Text style={styles.marker}>۝{toArabicIndic(ayahNumber)} </Text>
+    </Text>
   );
 };
 
@@ -36,7 +32,7 @@ const styles = StyleSheet.create({
   marker: {
     fontFamily: 'DesignFont',
     fontSize: 22,
-    lineHeight: BASE_LINE_HEIGHT, // 👈 SAME LINE HEIGHT
+    lineHeight: BASE_LINE_HEIGHT,
     includeFontPadding: false,
   },
 });

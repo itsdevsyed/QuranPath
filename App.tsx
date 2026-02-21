@@ -4,7 +4,7 @@ import { StatusBar, useColorScheme, View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
-import { initDb, getDb } from "./src/db/database";  
+import { initDb, getDb } from "./src/db/database";
 import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
 import AppNavigator from "./src/navigation/AppNavigator";
 import AppLoading from "./src/components/AppLoading";

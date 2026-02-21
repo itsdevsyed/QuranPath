@@ -3,131 +3,184 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 
 interface SurahHeaderProps {
-    name?: string;
-    transliteration?: string;
-    number?: number;
-    totalVerses?: number;
-    type?: 'Meccan' | 'Medinan';
-    showBismillah?: boolean;
+  name?: string;
+  number?: number;
+  totalVerses?: number;
+  type?: 'Meccan' | 'Medinan';
+  showBismillah?: boolean;
 }
 
 const SurahHeader: React.FC<SurahHeaderProps> = ({
-    name = '',
-    transliteration = '',
-    number,
-    totalVerses,
-    type = 'Meccan',
-    showBismillah = true,
+  name = '',
+  number,
+  totalVerses,
+  type = 'Meccan',
+  showBismillah = true,
 }) => {
-    const { appTheme } = useTheme();
-    const colors = appTheme.colors;
+  const { appTheme } = useTheme();
+  const colors = appTheme.colors;
 
-    return (
-        <View style={[styles.container, { backgroundColor: colors.background }]}>
-            {/* Surah Arabic Name */}
-            <Text style={[styles.surahName, { color: colors.textPrimary }]}>
-                {name}
+  const toArabic = (num: number) =>
+    String(num).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[Number(d)]);
+
+  const typeMap = { Meccan: 'مكية', Medinan: 'مدنية' };
+
+  return (
+    <View
+      style={[
+        styles.container,
+        {
+          borderColor: colors.border,
+          backgroundColor: colors.surface,
+        },
+      ]}
+    >
+      {/* Top decorative line */}
+      <View
+        style={[
+          styles.topAccent,
+          { backgroundColor: colors.primaryAccent },
+        ]}
+      />
+
+      <View style={styles.headerRow}>
+        {number && (
+          <View style={styles.surahMeta}>
+            <Text style={[styles.surahMetaText, { color: colors.primaryAccent }]}>
+              سورة
             </Text>
+            <Text style={[styles.surahMetaText, { color: colors.primaryAccent }]}>
+              {toArabic(number)}
+            </Text>
+          </View>
+        )}
 
-            {/* Transliteration */}
-            {transliteration ? (
-                <Text style={[styles.transliteration, { color: colors.textSecondary }]}>
-                    {transliteration}
-                </Text>
-            ) : null}
+        <Text style={[styles.separator, { color: colors.primaryAccent }]}>◈</Text>
 
-            {/* Decorative Divider */}
-            <View style={styles.decorativeLineContainer}>
-                <View style={[styles.decorativeLine, { backgroundColor: colors.border }]} />
-            </View>
+        <Text style={[styles.surahName, { color: colors.textPrimary }]}>
+          {name}
+        </Text>
 
-            {/* Surah Info Row */}
-            <View style={styles.infoRow}>
-                {number && (
-                    <Text style={[styles.infoText, { color: colors.textSecondary }]}>
-                        Surah {number}
-                    </Text>
-                )}
-                <Text style={[styles.dot, { color: colors.textSecondary }]}>•</Text>
-                <Text style={[styles.infoText, { color: colors.textSecondary }]}>
-                    {type}
-                </Text>
+        {(totalVerses || type) && (
+          <Text style={[styles.separator, { color: colors.primaryAccent }]}>
+            ◈
+          </Text>
+        )}
 
-                {totalVerses && (
-                    <>
-                        <Text style={[styles.dot, { color: colors.textSecondary }]}>•</Text>
-                        <Text style={[styles.infoText, { color: colors.textSecondary }]}>
-                            {totalVerses} Verses
-                        </Text>
-                    </>
-                )}
-            </View>
-
-            {/* Optional Bismillah */}
-            {showBismillah && (
-                <Text style={[styles.basmala, { color: colors.textPrimary }]}>
-                    بِسْمِ ٱللّٰهِ ٱلرَّحْمٰنِ ٱلرَّحِيمِ
-                </Text>
-            )}
+        <View style={styles.infoTags}>
+          {totalVerses && (
+            <Text style={[styles.infoText, { color: colors.textSecondary }]}>
+              {toArabic(totalVerses)} آيات
+            </Text>
+          )}
+          {type && (
+            <Text
+              style={[
+                styles.typeBadge,
+                {
+                  borderColor: colors.primaryAccent,
+                  color: colors.primaryAccent,
+                },
+              ]}
+            >
+              {typeMap[type]}
+            </Text>
+          )}
         </View>
-    );
+      </View>
+
+      {/* Divider line under header row */}
+      <View
+        style={[
+          styles.bottomDivider,
+          { backgroundColor: colors.border },
+        ]}
+      />
+
+      {showBismillah && (
+        <Text style={[styles.bismillah, { color: colors.textPrimary }]}>
+          بِسْمِ ٱللّٰهِ ٱلرَّحْمٰنِ ٱلرَّحِيمِ
+        </Text>
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        paddingVertical: 24,
-        paddingHorizontal: 20,
-        alignItems: 'center',
-    },
-    surahName: {
-        fontFamily: 'ArabicFont',
-        fontSize: 32,
-        lineHeight: 44,
-        textAlign: 'center',
-        letterSpacing: 1,
-        marginBottom: 40, // ✅ added spacing after Arabic name
-    },
-    transliteration: {
-        fontSize: 15,
-        fontWeight: '400',
-        letterSpacing: 0.3,
-        textAlign: 'center',
-        opacity: 0.8,
-        marginBottom: 12, // ✅ extra space below transliteration for balance
-    },
-    decorativeLineContainer: {
-        alignItems: 'center',
-        marginVertical: 10,
-    },
-    decorativeLine: {
-        width: 80,
-        height: 2,
-        borderRadius: 2,
-        opacity: 0.5,
-    },
-    infoRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 14,
-    },
-    infoText: {
-        fontSize: 13,
-        fontWeight: '500',
-        textTransform: 'capitalize',
-    },
-    dot: {
-        marginHorizontal: 6,
-        fontSize: 14,
-        opacity: 0.7,
-    },
-    basmala: {
-        fontFamily: 'ArabicFont',
-        fontSize: 24,
-        textAlign: 'center',
-        lineHeight: 36,
-        marginTop: 8,
-    },
+  container: {
+    width: '100%',
+    maxWidth: 480,
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    marginBottom: 20,
+    overflow: 'hidden',
+  },
+  topAccent: {
+    height: 3,
+    width: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexWrap: 'nowrap',
+    gap: 8,
+    marginBottom: 12,
+  },
+  surahMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  surahMetaText: {
+    fontFamily: 'DesignFont',
+    fontSize: 16,
+  },
+  separator: {
+    fontFamily: 'DesignFont',
+    fontSize: 22,
+    opacity: 0.8,
+  },
+  surahName: {
+    fontFamily: 'DesignFont',
+    fontSize: 26,
+  },
+  infoTags: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  infoText: {
+    fontFamily: 'DesignFont',
+    fontSize: 14,
+    opacity: 0.8,
+  },
+  typeBadge: {
+    fontFamily: 'DesignFont',
+    fontSize: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+  bottomDivider: {
+    height: 1,
+    width: '100%',
+    marginBottom: 12,
+    opacity: 0.4,
+  },
+  bismillah: {
+    fontFamily: 'DesignFont',
+    fontSize: 20,
+    textAlign: 'center',
+    opacity: 0.95,
+  },
 });
 
 export default SurahHeader;

@@ -12,11 +12,11 @@ const CustomColors = {
         primaryAccent: '#1F2937',
     },
     dark: {
-        background: '#0A0A0A',
+        background: '#000000ff',
         card: '#1A1A1A',
         textPrimary: '#FFF',
         textSecondary: '#9CA3AF',
-        border: '#2C2C2C',
+        border: '#000000ff',
         primary: '#FFF',
         primaryAccent: '#F9FAFB',
     },
@@ -49,17 +49,17 @@ const getAppTheme = (isDark: boolean) => {
 interface ThemeContextType {
     isDarkMode: boolean;
     appTheme: ReturnType<typeof getAppTheme>;
-    colors: typeof CustomColors.light | typeof CustomColors.dark;
+    colors: ReturnType<typeof getAppTheme>['colors'];
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-    const systemColorScheme = useColorScheme();
+    const systemColorScheme = useColorScheme() ?? 'light';
     const isDarkMode = systemColorScheme === 'dark';
 
     const appTheme = useMemo(() => getAppTheme(isDarkMode), [isDarkMode]);
-    const colors = isDarkMode ? CustomColors.dark : CustomColors.light;
+    const colors = appTheme.colors;
 
     const value = useMemo(() => ({
         isDarkMode,
