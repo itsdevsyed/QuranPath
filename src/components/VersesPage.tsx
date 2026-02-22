@@ -31,7 +31,7 @@ const VersesPage: React.FC = () => {
     >
       <SurahHeader
         name={surah.name_arabic}
-        transliteration={surah.name_latin}
+        nameLatin={surah.name_latin}
         number={surah.id}
         totalVerses={surah.total_verse}
         type="Meccan"

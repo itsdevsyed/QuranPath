@@ -6,6 +6,7 @@ interface SurahHeaderProps {
   name?: string;
   number?: number;
   totalVerses?: number;
+  nameLatin?: string;
   type?: 'Meccan' | 'Medinan';
   showBismillah?: boolean;
 }

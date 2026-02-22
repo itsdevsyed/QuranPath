@@ -48,7 +48,7 @@ export async function fetchVersesBySurah(surahId: number) {
   const db = getDb();
   return db.getAllSync(
     `
-    SELECT id, surah_id, ayah_no, text, text_no_tajweed, juz, page_no
+    SELECT id, surah_id, ayah_no, text, juz, page_no
     FROM verse
     WHERE surah_id = ?
     ORDER BY ayah_no ASC;

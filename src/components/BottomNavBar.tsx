@@ -4,11 +4,12 @@ import { Home, BookOpenText, MoonStar, Repeat2, HeartPlus, BadgeInfo } from 'luc
 import { useTheme } from '../context/ThemeContext';
 import HomeScreen from '../screens/HomeScreen';
 import MushafScreen from '../screens/MushafScreen';
+import TarjumaScreen from '../screens/TarjumaScreen';
 
-type IconName = 'Home' | 'BookOpenText' | 'MoonStar' | 'HeartPlus'   | 'BadgeInfo' ; 
+type IconName = 'Home' | 'BookOpenText' | 'MoonStar' | 'HeartPlus'   | 'BadgeInfo' ;
 
 interface Route {
-  key: 'Home' | 'Mushaf' | 'Tafseer' | 'Dikr' | 'About';
+  key: 'Home' | 'Mushaf' | 'Tarjuma' | 'Dikr' | 'About';
   title: string;
   icon: IconName;
 }
@@ -32,7 +33,7 @@ export default function BottomNavbar() {
   const routes: Route[] = [
     { key: 'Home', title: 'Home', icon: 'Home' },
     { key: 'Mushaf', title: 'Mushaf', icon: 'BookOpenText' },
-    { key: 'Tafseer', title: 'Tafseer', icon: 'MoonStar' },
+    { key: 'Tarjuma', title: 'Tarjuma', icon: 'MoonStar' },
     { key: 'Dikr', title: 'Dikr', icon: 'HeartPlus' },
     { key: 'About', title: 'About', icon: 'BadgeInfo' },
 
@@ -45,8 +46,8 @@ export default function BottomNavbar() {
         return <HomeScreen />;
       case 'Mushaf':
         return <MushafScreen />;
-      case 'Tafseer':
-        return <PlaceholderScreen title="Tafseer" />;
+      case 'Tarjuma':
+        return <TarjumaScreen />;
       case 'Dikr':
         return <PlaceholderScreen title="Dikr" />;
       case 'About':

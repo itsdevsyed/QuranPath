@@ -6,6 +6,10 @@ const DB_NAME = 'quran.db';
 const SQLITE_DIR = FileSystem.documentDirectory + 'SQLite/';
 const DB_PATH = SQLITE_DIR + DB_NAME;
 
+const TRANSLATION_DB = 'quran_translator.db'
+
+
+
 let db: any = null; // Use 'any' to avoid TypeScript errors
 
 /**

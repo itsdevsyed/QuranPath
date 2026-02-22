@@ -11,23 +11,21 @@ const MushafScreen: React.FC = () => {
 
   // Dynamic tab data
   const tabs: TabItem[] = [
-    { key: 'surahs', label: 'Surahs' },
     { key: 'juz', label: 'Juz' },
-    { key: 'bookmarks', label: 'Bookmarks' },
+    { key: 'surahs', label: 'Surahs' },
+
   ];
 
   // Active tab state
-  const [activeTab, setActiveTab] = useState<string>('surahs');
+  const [activeTab, setActiveTab] = useState<string>('juz');
 
   // Render content based on active tab
   const renderContent = () => {
     switch (activeTab) {
-      case 'surahs':
-        return <SurahList listContentStyle={styles.listPadding} />;
-      case 'juz':
+        case 'juz':
         return <JuzList listContentStyle={styles.listPadding} />;
-      case 'bookmarks':
-        return <View style={styles.emptyContent} />;
+        case 'surahs':
+        return <SurahList listContentStyle={styles.listPadding} />;
       default:
         return null;
     }
