@@ -18,14 +18,27 @@ export const useSurahList = () => {
       try {
         const rows = await fetchAllSurahs();
 
-        const mapped = rows.map((row: any) => ({
-          number: row.id,
-          arabic: row.name_arabic,
-          english: row.name_latin || row.name_english,
-          translation: row.name_english,
-          verses: row.total_verse,
-          location: row.type, // 🔥 coming from DB now
-        }));
+        // Professional Urdu/Arabic spelling for Quran Apps
+        const locationMapping: { [key: string]: string } = {
+          'Meccan': 'مکیہ',
+          'Medinan': 'مدنیہ',
+          'meccan': 'مکیہ',
+          'medinan': 'مدنیہ',
+        };
+
+        const mapped = rows.map((row: any) => {
+          const rawLocation = row.type || '';
+          const urduLocation = locationMapping[rawLocation] || rawLocation;
+
+          return {
+            number: row.id,
+            arabic: row.name_arabic,
+            english: row.name_latin || row.name_english,
+            translation: row.name_english,
+            verses: row.total_verse,
+            location: urduLocation,
+          };
+        });
 
         setSurahList(mapped);
       } catch (err) {

@@ -19,7 +19,7 @@ export default function ContinueReadingCard() {
     const cardBorderColor = isDarkMode ? colors.border : colors.border;
     const titleColor = isDarkMode ? '#FFFFFF' : '#111827';
     const arabicColor = isDarkMode ? '#FFFFFF' : '#111827';
-    const subTextColor = isDarkMode ? '#D1D5DB' : '#6B7280';
+    const subTextColor = isDarkMode ? '#D1D5DB' : '#000000ff';
     const buttonBg = isDarkMode ? '#FFFFFF' : '#111827'; // WHITE button in dark mode
     const buttonTextColor = isDarkMode ? '#111827' : '#FFFFFF'; // BLACK text in dark mode
     const iconColor = isDarkMode ? '#FFFFFF' : '#111827';
@@ -28,7 +28,7 @@ export default function ContinueReadingCard() {
         ? { shadowColor: '#000', shadowOpacity: 0.3, shadowOffset: { width: 0, height: 2 }, shadowRadius: 4, elevation: 3 }
         : { shadowColor: 'rgba(0,0,0,0.1)', shadowOpacity: 0.3, shadowOffset: { width: 0, height: 4 }, shadowRadius: 6, elevation: 5 };
 
-    const styles = StyleSheet.create({  
+    const styles = StyleSheet.create({
         cardContainer: {
             width: width - 24,
             alignSelf: 'center',

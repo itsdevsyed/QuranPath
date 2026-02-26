@@ -7,8 +7,7 @@ import { useJuzVerses } from '../hooks/useJuzVerses';
 import AppLoading from './AppLoading';
 import AyahList from './AyahList';
 import JuzHeader from './JuzHeader';
-import SurahHeader from './SurahHeader'; // ✅ added
-
+import SurahHeader from './SurahHeader';
 export default function JuzVersesPage() {
   const route = useRoute<any>();
   const { juzNumber, title } = route.params;
@@ -46,7 +45,7 @@ export default function JuzVersesPage() {
                 name={group.surahName}
                 number={group.surahId}
                 totalVerses={group.totalVerses}
-                type={group.type}
+                type={group.type === "Meccan" || group.type === "Medinan" ? group.type : undefined}
                 showBismillah={group.showBismillah}
               />
 

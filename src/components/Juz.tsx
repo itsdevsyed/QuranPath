@@ -6,12 +6,12 @@ import {
     View,
     TouchableOpacity,
     ViewStyle,
+    Platform,
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import juzzNames from '../../assets/quran/Juzz.json';
-import { getDb } from '../db/database'; // your SQLite DB accessor
+import { getDb } from '../db/database';
 
 type RootStackParamList = {
     JuzVersesPage: {
@@ -20,149 +20,156 @@ type RootStackParamList = {
     };
 };
 
-type JuzListNavigationProp = NativeStackNavigationProp<
-    RootStackParamList,
-    'JuzVersesPage'
->;
+type JuzListNavigationProp = NativeStackNavigationProp<RootStackParamList, 'JuzVersesPage'>;
 
 type JuzListItemData = {
     number: number;
     arabic: string;
-    english: string;
     transliteration: string;
-    first_surah_id: number;
-    last_surah_id: number;
     verse_count: number;
-    start_verse: string;
-    end_verse: string;
 };
 
-type JuzListProps = { listContentStyle?: ViewStyle };
+const toUrduNumber = (num: number) => {
+    const urduDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+    return num.toString().split('').map(d => urduDigits[parseInt(d)]).join('');
+};
 
-const JuzListItem = memo(({ item, colors }: { item: JuzListItemData; colors: any }) => {
+const JuzListItem = memo(({ item, colors, isDarkMode }: { item: JuzListItemData; colors: any; isDarkMode: boolean; }) => {
     const navigation = useNavigation<JuzListNavigationProp>();
 
     const handlePress = () => {
         navigation.navigate('JuzVersesPage', {
             juzNumber: item.number,
-            title: `${item.english} (${item.arabic})`,
+            title: item.arabic,
         });
     };
 
-    const indexContainerStyle = {
-        borderColor: colors.primaryAccent,
-        borderWidth: 1.5,
-        backgroundColor: colors.isDarkMode ? `${colors.primaryAccent}15` : `${colors.primaryAccent}10`,
-    };
-
     return (
-        <TouchableOpacity style={styles.row} activeOpacity={0.65} onPress={handlePress}>
-            <View style={[styles.indexNumberContainer, indexContainerStyle]}>
-                <Text style={[styles.indexNumberText, { color: colors.primaryAccent }]}>{item.number}</Text>
-            </View>
-
-            <View style={styles.textContainer}>
-                <Text style={[styles.englishText, { color: colors.textPrimary }]} numberOfLines={1}>
-                    {item.english}
-                </Text>
-                <Text style={[styles.transliterationText, { color: colors.primaryAccent }]} numberOfLines={1}>
-                    {item.transliteration}
-                </Text>
-                <Text style={[styles.subtitle, { color: colors.textSecondary }]} numberOfLines={1}>
-                    Surahs: {item.first_surah_id}-{item.last_surah_id} • {item.verse_count} verses
-                </Text>
-            </View>
-
-            <Text style={[styles.arabicText, { color: colors.primary }]} numberOfLines={1}>
-                {item.arabic}
+        <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={handlePress}
+            style={[styles.scriptRow, { backgroundColor: colors.surface }]}
+        >
+            {/* BACKGROUND DECORATIVE NUMBER */}
+            <Text style={[styles.bgNumber, { color: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)' }]}>
+                {toUrduNumber(item.number)}
             </Text>
+
+            {/* LEFT SIDE: ID with VERTICAL DIVIDER | */}
+            <View style={styles.leftInfo}>
+                <Text style={[styles.idText, { color: colors.primaryAccent }]}>
+                    {String(item.number).padStart(2, '0')}
+                </Text>
+                <View style={[styles.verticalDivider, { backgroundColor: colors.primaryAccent, opacity: 0.3 }]} />
+            </View>
+
+            {/* CENTER: ARABIC & DUAL AYAH COUNT */}
+            <View style={styles.centerInfo}>
+                <Text style={[styles.arabicMain, { color: colors.primary }]} numberOfLines={1}>
+                    {item.arabic}
+                </Text>
+                <Text style={[styles.urduSubtitle, { color: colors.textSecondary }]} numberOfLines={1}>
+                    {item.verse_count} / {toUrduNumber(item.verse_count)} آيات
+                </Text>
+            </View>
+
+            {/* RIGHT SIDE: URDU ID */}
+            <View style={styles.rightInfo}>
+                <Text style={[styles.urduIdText, { color: colors.primaryAccent }]}>
+                    {toUrduNumber(item.number)}
+                </Text>
+            </View>
         </TouchableOpacity>
     );
 });
 
-const ListSeparator = memo(({ color }: { color: string }) => (
-    <View style={[styles.separator, { backgroundColor: color }]} />
-));
-
-export default function JuzList({ listContentStyle }: JuzListProps) {
-    const { colors } = useTheme();
+export default function JuzList({ listContentStyle }: { listContentStyle?: ViewStyle }) {
+    const { colors, isDarkMode } = useTheme();
     const [juzData, setJuzData] = useState<JuzListItemData[]>([]);
 
     useEffect(() => {
-        const loadJuz = async () => {
+        const loadJuz = () => {
             try {
                 const db = getDb();
                 const rows: any[] = db.getAllSync(`
-                    SELECT
-                        juz AS juz_number,
-                        MIN(surah_id) AS first_surah_id,
-                        MAX(surah_id) AS last_surah_id,
-                        COUNT(*) AS verse_count,
-                        MIN(surah_id) || ':' || MIN(ayah_no) AS start_verse,
-                        MAX(surah_id) || ':' || MAX(ayah_no) AS end_verse
-                    FROM verse
-                    GROUP BY juz
-                    ORDER BY juz ASC;
+                    SELECT id AS number, arabic_name AS arabic, total_ayahs AS verse_count
+                    FROM juz ORDER BY id ASC;
                 `);
-
-                // Merge with names from JSON
-                const merged = rows.map((r, idx) => ({
-                    number: r.juz_number,
-                    arabic: juzzNames[idx]?.arabic_name || '',
-                    english: juzzNames[idx]?.transliteration || '',
-                    transliteration: juzzNames[idx]?.transliteration || '',
-                    first_surah_id: r.first_surah_id,
-                    last_surah_id: r.last_surah_id,
-                    verse_count: r.verse_count,
-                    start_verse: r.start_verse,
-                    end_verse: r.end_verse,
-                }));
-
-                setJuzData(merged);
+                setJuzData(rows);
             } catch (err) {
-                console.error('Error loading Juz metadata from DB:', err);
+                console.error('Error loading Juz metadata:', err);
             }
         };
-
         loadJuz();
     }, []);
-
-    if (!juzData.length) {
-        return (
-            <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
-                <Text style={{ color: colors.textPrimary, textAlign: 'center' }}>
-                    ⚠️ Error: Could not load Juz list data.
-                </Text>
-            </View>
-        );
-    }
 
     return (
         <FlatList
             data={juzData}
-            renderItem={({ item }) => <JuzListItem item={item} colors={colors} />}
+            renderItem={({ item }) => <JuzListItem item={item} colors={colors} isDarkMode={isDarkMode} />}
             keyExtractor={(item) => item.number.toString()}
-            contentContainerStyle={[styles.listContentContainer, listContentStyle]}
-            ItemSeparatorComponent={() => <ListSeparator color={`${colors.textSecondary}20`} />}
-            style={[styles.container, { backgroundColor: colors.background }]}
-            initialNumToRender={15}
-            windowSize={21}
+            contentContainerStyle={[styles.listContent, listContentStyle]}
+            style={{ backgroundColor: colors.background }}
             showsVerticalScrollIndicator={false}
         />
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
-    errorContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-    listContentContainer: { paddingVertical: 8 },
-    row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 14, paddingHorizontal: 16 },
-    separator: { height: 1, marginHorizontal: 16 },
-    indexNumberContainer: { width: 34, height: 34, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginRight: 16 },
-    indexNumberText: { fontWeight: '700', fontSize: 14 },
-    textContainer: { flex: 1, justifyContent: 'center' },
-    englishText: { fontSize: 17, fontWeight: '600', letterSpacing: 0.3 },
-    transliterationText: { fontSize: 13, fontWeight: '500', marginTop: 2, opacity: 0.9 },
-    subtitle: { fontSize: 12, fontWeight: '400', marginTop: 2, opacity: 0.7 },
-    arabicText: { fontSize: 26, fontFamily: 'ArabicFont', textAlign: 'right', marginLeft: 12 },
+    listContent: { padding: 16 },
+    scriptRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 20,
+        paddingHorizontal: 20,
+        borderRadius: 20,
+        marginBottom: 12,
+        overflow: 'hidden',
+    },
+    bgNumber: {
+        position: 'absolute',
+        right: -10,
+        bottom: -20,
+        fontSize: 100,
+        fontFamily: 'ArabicFont',
+        zIndex: 0,
+    },
+    leftInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: 55,
+    },
+    idText: {
+        fontSize: 16,
+        fontWeight: '900',
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    },
+    verticalDivider: {
+        width: 2,
+        height: 24,
+        marginLeft: 12,
+    },
+    centerInfo: {
+        flex: 1,
+        alignItems: 'center',
+        zIndex: 1,
+    },
+    arabicMain: {
+        fontSize: 24,
+        fontFamily: 'ArabicFont',
+    },
+    urduSubtitle: {
+        fontSize: 14,
+        fontFamily: 'ArabicFont',
+        marginTop: 4,
+        opacity: 0.8,
+    },
+    rightInfo: {
+        width: 45,
+        alignItems: 'flex-end',
+    },
+    urduIdText: {
+        fontSize: 22,
+        fontFamily: 'ArabicFont',
+    }
 });

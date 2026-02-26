@@ -32,7 +32,7 @@ export async function initDb(): Promise<any> {
     }
 
     // Always overwrite DB during development to avoid stale copies
-    const asset = Asset.fromModule(require('../../assets/quran/quran.db'));
+    const asset = Asset.fromModule(require('../../assets/quran/quran_merged.db'));
     await asset.downloadAsync();
     console.log('Asset downloaded at:', asset.localUri);
 

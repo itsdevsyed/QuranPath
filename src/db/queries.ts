@@ -57,6 +57,14 @@ export async function fetchVersesBySurah(surahId: number) {
   );
 }
 
+export const fetchAllJuz = async () => {
+    const db = getDb();
+    return await db.getAllSync(`
+        SELECT id AS number, arabic_name AS arabic, total_ayahs AS verse_count
+        FROM juz ORDER BY id ASC;
+    `);
+};
+
 export const getVersesByJuz = (juzNumber: number) => {
   const db = getDb();
 
