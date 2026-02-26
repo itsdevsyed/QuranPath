@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo } from 'react';
 import {
     FlatList,
     StyleSheet,
@@ -7,26 +7,15 @@ import {
     TouchableOpacity,
     ViewStyle,
     Platform,
+    ActivityIndicator,
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { getDb } from '../db/database';
+import { useJuzList, JuzListItemData } from '../hooks/useJuzList';
 
 type RootStackParamList = {
-    JuzVersesPage: {
-        juzNumber: number;
-        title: string;
-    };
-};
-
-type JuzListNavigationProp = NativeStackNavigationProp<RootStackParamList, 'JuzVersesPage'>;
-
-type JuzListItemData = {
-    number: number;
-    arabic: string;
-    transliteration: string;
-    verse_count: number;
+    JuzVersesPage: { juzNumber: number; title: string };
 };
 
 const toUrduNumber = (num: number) => {
@@ -35,27 +24,18 @@ const toUrduNumber = (num: number) => {
 };
 
 const JuzListItem = memo(({ item, colors, isDarkMode }: { item: JuzListItemData; colors: any; isDarkMode: boolean; }) => {
-    const navigation = useNavigation<JuzListNavigationProp>();
-
-    const handlePress = () => {
-        navigation.navigate('JuzVersesPage', {
-            juzNumber: item.number,
-            title: item.arabic,
-        });
-    };
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
     return (
         <TouchableOpacity
             activeOpacity={0.8}
-            onPress={handlePress}
+            onPress={() => navigation.navigate('JuzVersesPage', { juzNumber: item.number, title: item.arabic })}
             style={[styles.scriptRow, { backgroundColor: colors.surface }]}
         >
-            {/* BACKGROUND DECORATIVE NUMBER */}
             <Text style={[styles.bgNumber, { color: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)' }]}>
                 {toUrduNumber(item.number)}
             </Text>
 
-            {/* LEFT SIDE: ID with VERTICAL DIVIDER | */}
             <View style={styles.leftInfo}>
                 <Text style={[styles.idText, { color: colors.primaryAccent }]}>
                     {String(item.number).padStart(2, '0')}
@@ -63,7 +43,6 @@ const JuzListItem = memo(({ item, colors, isDarkMode }: { item: JuzListItemData;
                 <View style={[styles.verticalDivider, { backgroundColor: colors.primaryAccent, opacity: 0.3 }]} />
             </View>
 
-            {/* CENTER: ARABIC & DUAL AYAH COUNT */}
             <View style={styles.centerInfo}>
                 <Text style={[styles.arabicMain, { color: colors.primary }]} numberOfLines={1}>
                     {item.arabic}
@@ -73,7 +52,6 @@ const JuzListItem = memo(({ item, colors, isDarkMode }: { item: JuzListItemData;
                 </Text>
             </View>
 
-            {/* RIGHT SIDE: URDU ID */}
             <View style={styles.rightInfo}>
                 <Text style={[styles.urduIdText, { color: colors.primaryAccent }]}>
                     {toUrduNumber(item.number)}
@@ -85,23 +63,11 @@ const JuzListItem = memo(({ item, colors, isDarkMode }: { item: JuzListItemData;
 
 export default function JuzList({ listContentStyle }: { listContentStyle?: ViewStyle }) {
     const { colors, isDarkMode } = useTheme();
-    const [juzData, setJuzData] = useState<JuzListItemData[]>([]);
+    const { juzData, loading } = useJuzList();
 
-    useEffect(() => {
-        const loadJuz = () => {
-            try {
-                const db = getDb();
-                const rows: any[] = db.getAllSync(`
-                    SELECT id AS number, arabic_name AS arabic, total_ayahs AS verse_count
-                    FROM juz ORDER BY id ASC;
-                `);
-                setJuzData(rows);
-            } catch (err) {
-                console.error('Error loading Juz metadata:', err);
-            }
-        };
-        loadJuz();
-    }, []);
+    if (loading) {
+        return <ActivityIndicator style={{ flex: 1 }} color={colors.primaryAccent} />;
+    }
 
     return (
         <FlatList

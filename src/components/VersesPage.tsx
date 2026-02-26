@@ -1,8 +1,8 @@
 import React from 'react';
-import { ScrollView, View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, FlatList, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { useTheme } from '../context/ThemeContext';
-import { useSurah } from '../hooks/useSurah';
+import { useSurahPaged } from '../hooks/useSurahPaged'; // The paginated hook
 
 import SurahHeader from './SurahHeader';
 import AyahList from './AyahList';
@@ -12,11 +12,13 @@ const VersesPage: React.FC = () => {
   const { appTheme } = useTheme();
   const route = useRoute<any>();
   const surahId = route.params?.surahId;
-  const { surah, verses, loading } = useSurah(surahId);
 
-  if (loading) return <AppLoading />;
+  // Use the high-performance paged hook
+  const { surah, verses, loading, loadMore, hasMore } = useSurahPaged(surahId);
 
-  if (!surah) {
+  if (loading && verses.length === 0) return <AppLoading />;
+
+  if (!surah && !loading) {
     return (
       <View style={[styles.errorContainer, { backgroundColor: appTheme.colors.background }]}>
         <Text style={{ color: appTheme.colors.textPrimary }}>⚠️ Surah not found.</Text>
@@ -25,21 +27,44 @@ const VersesPage: React.FC = () => {
   }
 
   return (
-    <ScrollView
+    <FlatList
       style={[styles.container, { backgroundColor: appTheme.colors.background }]}
+      data={[{ type: 'ayah-list' }]} // We use a dummy single item to render AyahList once
+      keyExtractor={(item) => item.type}
       showsVerticalScrollIndicator={false}
-    >
-      <SurahHeader
-        name={surah.name_arabic}
-        nameLatin={surah.name_latin}
-        number={surah.id}
-        totalVerses={surah.total_verse}
-        type="Meccan"
-      />
-      <View style={styles.textContainer}>
-        <AyahList verses={verses} />
-      </View>
-    </ScrollView>
+
+      // We put the Header here so it stays at the top
+      ListHeaderComponent={
+        <SurahHeader
+          name={surah.name_arabic}
+          nameLatin={surah.name_latin}
+          number={surah.id}
+          totalVerses={surah.total_verse}
+          type={surah.location || "Meccan"}
+        />
+      }
+
+      // We render your AyahList component here
+      renderItem={() => (
+        <View style={styles.textContainer}>
+          <AyahList verses={verses} />
+        </View>
+      )}
+
+      // Pagination Logic
+      onEndReached={loadMore}
+      onEndReachedThreshold={0.5}
+
+      ListFooterComponent={() =>
+        hasMore ? (
+          <ActivityIndicator
+            size="small"
+            color={appTheme.colors.primaryAccent}
+            style={{ marginVertical: 30 }}
+          />
+        ) : <View style={{ height: 50 }} />
+      }
+    />
   );
 };
 

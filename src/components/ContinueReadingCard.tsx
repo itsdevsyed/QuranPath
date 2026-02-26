@@ -1,79 +1,173 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
-import { Repeat2 } from 'lucide-react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Dimensions, Platform } from 'react-native';
+import { Bookmark, ArrowRight } from 'lucide-react-native';
 import { useTheme } from '../context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
 export default function ContinueReadingCard() {
-    const { colors, isDarkMode } = useTheme();
+    const { isDarkMode } = useTheme();
 
     const lastRead = {
-        title: "Continue Reading",
+        title: "CONTINUE READING",
         surahArabic: "سورة الفاتحة",
         surahEnglish: "Surah Al-Fatiha",
-        ayahInfo: "Ayah 3/7",
+        ayahInfo: "Ayah 3 of 7",
+        progress: 0.42,
     };
 
-    const cardBackground = isDarkMode ? colors.card : colors.card;
-    const cardBorderColor = isDarkMode ? colors.border : colors.border;
-    const titleColor = isDarkMode ? '#FFFFFF' : '#111827';
-    const arabicColor = isDarkMode ? '#FFFFFF' : '#111827';
-    const subTextColor = isDarkMode ? '#D1D5DB' : '#000000ff';
-    const buttonBg = isDarkMode ? '#FFFFFF' : '#111827'; // WHITE button in dark mode
-    const buttonTextColor = isDarkMode ? '#111827' : '#FFFFFF'; // BLACK text in dark mode
-    const iconColor = isDarkMode ? '#FFFFFF' : '#111827';
-
-    const shadowProps = isDarkMode
-        ? { shadowColor: '#000', shadowOpacity: 0.3, shadowOffset: { width: 0, height: 2 }, shadowRadius: 4, elevation: 3 }
-        : { shadowColor: 'rgba(0,0,0,0.1)', shadowOpacity: 0.3, shadowOffset: { width: 0, height: 4 }, shadowRadius: 6, elevation: 5 };
-
-    const styles = StyleSheet.create({
-        cardContainer: {
-            width: width - 24,
-            alignSelf: 'center',
-            marginVertical: 16,
-            padding: 20,
-            backgroundColor: cardBackground,
-            borderRadius: 16,
-            borderWidth: 1,
-            borderColor: cardBorderColor,
-            ...shadowProps,
-        },
-        header: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
-        icon: { marginRight: 10 },
-        title: { fontSize: 16, fontWeight: '700', color: titleColor },
-        // 🌟 REFINEMENT: Removed explicit fontWeight: 'bold' to avoid potential conflicts with the custom font's weight 🌟
-        surahArabic: {
-            fontSize: 32,
-            color: arabicColor,
-            textAlign: 'right',
-            marginBottom: 6,
-            fontFamily: 'ArabicFont', // IMPORTANT: This must match the name in App.tsx
-        },
-        surahEnglishInfo: { fontSize: 16, color: subTextColor, marginBottom: 20 },
-        readButton: {
-            backgroundColor: buttonBg,
-            paddingVertical: 12,
-            paddingHorizontal: 20,
-            borderRadius: 12,
-            alignSelf: 'flex-start',
-            ...shadowProps,
-        },
-        readButtonText: { fontSize: 16, fontWeight: '700', color: buttonTextColor },
-    });
+    // 🌑 The Luxury "Polarity" Logic
+    // If it's light mode, the card is black. If it's dark mode, the card is white.
+    const cardBg = isDarkMode ? '#FFFFFF' : '#000000';
+    const textColor = isDarkMode ? '#000000' : '#FFFFFF';
+    const subTextColor = isDarkMode ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)';
+    const btnBg = isDarkMode ? '#000000' : '#FFFFFF';
+    const btnText = isDarkMode ? '#FFFFFF' : '#000000';
 
     return (
-        <View style={styles.cardContainer}>
-            <View style={styles.header}>
-                <Repeat2 color={iconColor} size={24} style={styles.icon} />
-                <Text style={styles.title}>{lastRead.title}</Text>
+        <View style={styles.outerWrapper}>
+            <View style={[styles.container, { backgroundColor: cardBg }]}>
+
+                {/* 1. TOP SECTION: Minimalist Header */}
+                <View style={styles.header}>
+                    <View style={styles.badge}>
+                        <Bookmark color={textColor} size={12} fill={textColor} />
+                        <Text style={[styles.badgeText, { color: textColor }]}>{lastRead.title}</Text>
+                    </View>
+                    <View style={[styles.dot, { backgroundColor: subTextColor }]} />
+                </View>
+
+                {/* 2. MIDDLE SECTION: Elegant Typography */}
+                <View style={styles.body}>
+                    <View>
+                        <Text style={[styles.englishTitle, { color: textColor }]}>{lastRead.surahEnglish}</Text>
+                        <Text style={[styles.ayahText, { color: subTextColor }]}>{lastRead.ayahInfo}</Text>
+                    </View>
+                    <Text style={[styles.arabicText, { color: textColor }]}>{lastRead.surahArabic}</Text>
+                </View>
+
+                {/* 3. FOOTER SECTION: Progress & Action */}
+                <View style={styles.footer}>
+                    <View style={styles.progressBox}>
+                        <View style={[styles.track, { backgroundColor: subTextColor + '33' }]}>
+                            <View style={[styles.fill, { width: `${lastRead.progress * 100}%`, backgroundColor: textColor }]} />
+                        </View>
+                        <Text style={[styles.percent, { color: textColor }]}>
+                            {Math.round(lastRead.progress * 100)}% <Text style={{fontWeight: '400', color: subTextColor}}>read</Text>
+                        </Text>
+                    </View>
+
+                    <TouchableOpacity
+                        style={[styles.actionBtn, { backgroundColor: btnBg }]}
+                        activeOpacity={0.9}
+                    >
+                        <Text style={[styles.btnLabel, { color: btnText }]}>Resume</Text>
+                        <ArrowRight color={btnText} size={14} strokeWidth={3} />
+                    </TouchableOpacity>
+                </View>
+
             </View>
-            <Text style={styles.surahArabic}>{lastRead.surahArabic}</Text>
-            <Text style={styles.surahEnglishInfo}>{lastRead.surahEnglish} • {lastRead.ayahInfo}</Text>
-            <TouchableOpacity style={styles.readButton} activeOpacity={0.8}>
-                <Text style={styles.readButtonText}>Start Reading</Text>
-            </TouchableOpacity>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    outerWrapper: {
+        width: width - 32,
+        alignSelf: 'center',
+        marginVertical: 15,
+        // Sharp, modern shadow
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 10 },
+                shadowOpacity: 0.1,
+                shadowRadius: 15,
+            },
+            android: { elevation: 6 },
+        }),
+    },
+    container: {
+        borderRadius: 24,
+        padding: 24,
+        // Fine border for definition
+        borderWidth: 1,
+        borderColor: 'rgba(150,150,150,0.1)',
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 25,
+    },
+    badge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    },
+    badgeText: {
+        fontSize: 10,
+        fontWeight: '900',
+        letterSpacing: 1.5,
+    },
+    dot: {
+        width: 5,
+        height: 5,
+        borderRadius: 2.5,
+    },
+    body: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        marginBottom: 30,
+    },
+    englishTitle: {
+        fontSize: 24,
+        fontWeight: '800',
+        letterSpacing: -0.5,
+        marginBottom: 2,
+    },
+    ayahText: {
+        fontSize: 13,
+        fontWeight: '600',
+    },
+    arabicText: {
+        fontSize: 34,
+        fontFamily: 'ArabicFont',
+        lineHeight: 45,
+    },
+    footer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 20,
+    },
+    progressBox: {
+        flex: 1,
+    },
+    track: {
+        height: 3,
+        borderRadius: 1.5,
+        marginBottom: 8,
+    },
+    fill: {
+        height: '100%',
+        borderRadius: 1.5,
+    },
+    percent: {
+        fontSize: 12,
+        fontWeight: '800',
+    },
+    actionBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: 12,
+        gap: 6,
+    },
+    btnLabel: {
+        fontSize: 14,
+        fontWeight: '800',
+    },
+});
