@@ -8,7 +8,7 @@ interface AyahTextProps {
   ayahNumber: number;
 }
 const BASE_LINE_HEIGHT = 56;
-
+//this is what its does the thing ok 
 const AyahText: React.FC<AyahTextProps> = ({ text, ayahNumber }) => {
   const { colors } = useTheme();
 
